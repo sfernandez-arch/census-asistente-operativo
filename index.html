@@ -6,7 +6,7 @@
 <title>Census — Asistente Operativo</title>
 <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:#2a2a2a;--red:#B91D21;--red-dark:#951914;--red-glow:rgba(185,29,33,0.15);--yellow:#d4a017;--yellow-glow:rgba(212,160,23,0.12);--text:#ffffff;--text-muted:#ADADAD;--text-dim:#666666; }
+  :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:#2a2a2a;--red:#B91D21;--red-dark:#951914;--red-glow:rgba(185,29,33,0.15);--yellow:#d4a017;--yellow-glow:rgba(212,160,23,0.12);--text:#ffffff;--text-muted:#ADADAD;--text-dim:#666666}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
   header{background:#000;border-bottom:1px solid var(--border);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
@@ -22,6 +22,8 @@
   @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,130,0.4)}50%{box-shadow:0 0 0 5px rgba(76,175,130,0)}}
   .screen{display:none;flex:1;flex-direction:column}
   .screen.active{display:flex}
+
+  /* LOGIN */
   #loginScreen{align-items:center;justify-content:center;padding:40px 20px}
   .login-box{width:100%;max-width:420px;animation:fadeUp 0.6s ease both}
   .login-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:16px}
@@ -32,15 +34,47 @@
   .field-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:14px 16px;font-family:'Lato',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;margin-bottom:20px}
   .field-input:focus{border-color:var(--red)}
   .field-input::placeholder{color:var(--text-dim)}
-  .btn-primary{width:100%;background:var(--red);border:none;border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:white;cursor:pointer;transition:background 0.2s}
+  .btn-primary{width:100%;background:var(--red);border:none;border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:white;cursor:pointer;transition:background 0.2s;margin-bottom:12px}
   .btn-primary:hover{background:var(--red-dark)}
-  .login-error{font-size:13px;color:#ff6b6b;margin-top:12px;display:none;text-align:center}
+  .login-error{font-size:13px;color:#ff6b6b;margin-top:8px;display:none;text-align:center}
+
+  /* BLOCKED */
   #blockedScreen{align-items:center;justify-content:center;padding:40px 20px}
-  .blocked-box{width:100%;max-width:420px;text-align:center;animation:fadeUp 0.6s ease both}
+  .blocked-box{width:100%;max-width:420px;animation:fadeUp 0.6s ease both}
   .blocked-icon{width:56px;height:56px;border:2px solid var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px}
-  .blocked-box h2{font-family:'Work Sans',sans-serif;font-size:22px;font-weight:600;margin-bottom:12px}
-  .blocked-box p{font-size:14px;color:var(--text-muted);line-height:1.7;font-weight:300;margin-bottom:8px}
-  .blocked-mail{color:var(--red);font-size:13px;margin-top:20px}
+  .blocked-box h2{font-family:'Work Sans',sans-serif;font-size:22px;font-weight:600;margin-bottom:12px;text-align:center}
+  .blocked-box .sub{font-size:14px;color:var(--text-muted);line-height:1.7;font-weight:300;margin-bottom:24px;text-align:center}
+  .blocked-divider{width:40px;height:2px;background:var(--border);margin:0 auto 24px}
+  .unlock-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-weight:500;text-align:center}
+  .code-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:14px 16px;font-family:'Work Sans',sans-serif;font-size:28px;font-weight:600;color:var(--text);outline:none;transition:border-color 0.2s;margin-bottom:16px;text-align:center;letter-spacing:10px}
+  .code-input:focus{border-color:var(--red)}
+  .code-input::placeholder{color:var(--text-dim);letter-spacing:2px;font-size:14px;font-weight:300}
+  .btn-unlock{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+  .btn-unlock:hover{border-color:var(--red);color:var(--text);background:var(--red-glow)}
+  .unlock-error{font-size:13px;color:#ff6b6b;margin-top:8px;display:none;text-align:center}
+  .unlock-hint{font-size:12px;color:var(--text-dim);text-align:center;margin-top:16px;line-height:1.6}
+
+  /* ADMIN */
+  #adminScreen{align-items:center;justify-content:center;padding:40px 20px}
+  .admin-box{width:100%;max-width:520px;animation:fadeUp 0.6s ease both}
+  .admin-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:16px}
+  .admin-box h2{font-family:'Work Sans',sans-serif;font-size:24px;font-weight:600;margin-bottom:8px}
+  .admin-divider{width:40px;height:2px;background:var(--yellow);margin:16px 0 28px}
+  .admin-section{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:24px;margin-bottom:16px}
+  .admin-section h3{font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+  .admin-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:12px 16px;font-family:'Lato',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:16px;cursor:pointer}
+  .admin-select:focus{border-color:var(--yellow)}
+  .btn-generate{width:100%;background:var(--yellow);border:none;border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#000;cursor:pointer;transition:opacity 0.2s}
+  .btn-generate:hover{opacity:0.85}
+  .code-display{display:none;margin-top:20px;text-align:center;background:var(--surface2);border:1px solid rgba(212,160,23,0.3);border-radius:3px;padding:24px}
+  .code-for{font-size:13px;color:var(--text-muted);margin-bottom:8px}
+  .big-code{font-family:'Work Sans',sans-serif;font-size:48px;font-weight:600;letter-spacing:14px;color:var(--yellow);margin-bottom:6px}
+  .code-expiry{font-size:12px;color:var(--text-dim)}
+  .countdown{font-size:13px;color:var(--yellow);margin-top:8px;font-weight:600}
+  .btn-chat{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;transition:all 0.2s;margin-top:8px}
+  .btn-chat:hover{border-color:var(--red);color:var(--text)}
+
+  /* ALERTS */
   .alert-banner{border-radius:3px;padding:14px 16px;margin:16px 0 0;display:none;animation:fadeUp 0.4s ease both}
   .alert-banner.show{display:flex;align-items:flex-start;gap:12px}
   .alert-banner.alert-red{background:rgba(185,29,33,0.12);border:1px solid rgba(185,29,33,0.35)}
@@ -49,6 +83,8 @@
   .alert-text{font-size:13px;color:var(--text-muted);line-height:1.6;flex:1}
   .alert-text strong{color:var(--text)}
   .alert-dismiss{margin-left:8px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:18px;flex-shrink:0;padding:0 4px;line-height:1}
+
+  /* CHAT */
   #chatScreen{flex-direction:column}
   main{flex:1;display:flex;flex-direction:column;max-width:800px;width:100%;margin:0 auto;padding:0 20px}
   #messages{flex:1;padding:32px 0 16px;display:flex;flex-direction:column;gap:24px;min-height:calc(100vh - 240px)}
@@ -103,6 +139,7 @@
 </style>
 </head>
 <body>
+
 <header>
   <div class="header-left">
     <img src="https://censusuy.com/wp-content/uploads/2021/02/cropped-PNG-164x55.png" alt="Census" class="logo-img">
@@ -115,6 +152,7 @@
   </div>
 </header>
 
+<!-- LOGIN -->
 <div class="screen active" id="loginScreen">
   <div class="login-box">
     <div class="login-tag">Census · Acceso interno</div>
@@ -128,16 +166,48 @@
   </div>
 </div>
 
+<!-- BLOCKED -->
 <div class="screen" id="blockedScreen">
   <div class="blocked-box">
     <div class="blocked-icon">🔒</div>
     <h2>Acceso bloqueado</h2>
-    <p>Tenés <strong id="missedDays"></strong> días consecutivos sin enviar el resumen de actividad.</p>
-    <p>Para reactivar tu acceso, contactá a tu supervisor.</p>
-    <div class="blocked-mail">Supervisores: Matías · Valentino · Patricia</div>
+    <p class="sub">Tenés <strong id="missedDays"></strong> días consecutivos sin enviar el resumen.<br>Solicitá un código de desbloqueo a tu supervisor.</p>
+    <div class="blocked-divider"></div>
+    <div class="unlock-label">Código de desbloqueo</div>
+    <input type="text" class="code-input" id="unlockCodeInput" placeholder="000000" maxlength="6"
+      oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+      onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button class="btn-unlock" onclick="tryUnlock()">Desbloquear acceso</button>
+    <div class="unlock-error" id="unlockError"></div>
+    <div class="unlock-hint">El código lo genera Matías, Santiago o Joaquín.<br>Es válido por 5 minutos.</div>
   </div>
 </div>
 
+<!-- ADMIN -->
+<div class="screen" id="adminScreen">
+  <div class="admin-box">
+    <div class="admin-tag">Panel de administración</div>
+    <h2 id="adminWelcome">Hola, ¿qué necesitás?</h2>
+    <div class="admin-divider"></div>
+    <div class="admin-section">
+      <h3>🔓 Generar código de desbloqueo</h3>
+      <div class="field-label">Seleccioná el usuario a desbloquear</div>
+      <select class="admin-select" id="unlockTarget">
+        <option value="">— Elegí un usuario —</option>
+      </select>
+      <button class="btn-generate" onclick="generateCode()">Generar código de 6 dígitos</button>
+      <div class="code-display" id="codeDisplay">
+        <div class="code-for" id="codeFor"></div>
+        <div class="big-code" id="bigCode"></div>
+        <div class="code-expiry">Válido por 5 minutos</div>
+        <div class="countdown" id="countdown"></div>
+      </div>
+    </div>
+    <button class="btn-chat" onclick="goToChat()">→ Ir al chat del asistente</button>
+  </div>
+</div>
+
+<!-- CHAT -->
 <div class="screen" id="chatScreen">
   <main>
     <div class="alert-banner alert-red" id="alertBannerRed">
@@ -182,86 +252,221 @@
 </div>
 
 <script>
+// ─── CONFIGURACIÓN ────────────────────────────────────────────────────────────
+const API_URL = 'https://census-proxy.sfernandez-8a7.workers.dev';
+
 // CONVENCIÓN DE MAILS: inicial del nombre + apellido completo @censusuy.com
 // Ejemplo: Juan Pérez → jperez@censusuy.com
-// Para nuevos ingresos: agregar con isNew: true hasta que Santiago confirme el perfil
+// Nuevos ingresos: agregar con isNew: true hasta que Santiago confirme el perfil
 
 const ALLOWED_USERS = {
-  // Auxiliares junior
-  'arucci@censusuy.com':     { name: 'Antonela',   role: 'junior',      supervisor: 'Valentino', isNew: false },
-  'ftorres@censusuy.com':    { name: 'Federica',   role: 'junior',      supervisor: 'Patricia',  isNew: false },
-  // Auxiliares senior
-  'vbertinat@censusuy.com':  { name: 'Valentino',  role: 'senior',      supervisor: 'Matías',    isNew: false },
-  'prodriguez@censusuy.com': { name: 'Patricia',   role: 'senior',      supervisor: 'Matías',    isNew: false },
+  // Auxiliares junior — escalan a su supervisor directo
+  'arucci@censusuy.com':     { name: 'Antonela',    role: 'junior',      supervisor: 'Valentino', isNew: false },
+  'ftorres@censusuy.com':    { name: 'Federica',    role: 'junior',      supervisor: 'Patricia',  isNew: false },
+  // Auxiliares senior — escalan a Matías
+  'vbertinat@censusuy.com':  { name: 'Valentino',   role: 'senior',      supervisor: 'Matías',    isNew: false },
+  'prodriguez@censusuy.com': { name: 'Patricia',    role: 'senior',      supervisor: 'Matías',    isNew: false },
   // Encargado general
-  'mmorales@censusuy.com':   { name: 'Matías',     role: 'encargado',   supervisor: 'Socios',    isNew: false },
-  // Socios
-  'sfernandez@censusuy.com': { name: 'Santiago',   role: 'socio',       supervisor: null,        isNew: false },
-  'jsilvera@censusuy.com':   { name: 'Joaquín',    role: 'socio',       supervisor: null,        isNew: false },
-  // Contadores tercerizados
-  'ngonzalez@censusuy.com':  { name: 'N. González',role: 'tercerizado', supervisor: 'Matías',    isNew: false },
-  'nmoure@censusuy.com':     { name: 'N. Moure',   role: 'tercerizado', supervisor: 'Matías',    isNew: false },
+  'mmorales@censusuy.com':   { name: 'Matías',      role: 'encargado',   supervisor: 'Socios',    isNew: false },
+  // Socios — nunca se bloquean, solo recordatorio suave
+  'sfernandez@censusuy.com': { name: 'Santiago',    role: 'socio',       supervisor: null,        isNew: false },
+  'jsilvera@censusuy.com':   { name: 'Joaquín',     role: 'socio',       supervisor: null,        isNew: false },
+  // Contadores tercerizados — nunca se bloquean
+  'ngonzalez@censusuy.com':  { name: 'N. González', role: 'tercerizado', supervisor: 'Matías',    isNew: false },
+  'nmoure@censusuy.com':     { name: 'N. Moure',    role: 'tercerizado', supervisor: 'Matías',    isNew: false },
   // NUEVOS INGRESOS: agregar acá con isNew: true
   // 'napellido@censusuy.com': { name: 'Nombre', role: 'junior', supervisor: 'Valentino', isNew: true },
 };
 
+// Roles que pueden generar códigos y ver panel admin
+const ADMIN_ROLES = ['socio', 'encargado'];
+// Roles que nunca se bloquean
+const NO_BLOCK_ROLES = ['socio', 'tercerizado'];
+
 const SUMMARY_EMAIL = 'contacto@censusuy.com';
 const MAX_MISSED_DAYS = 3;
-let currentUser = null, history = [], isLoading = false;
+const CODE_DURATION_MS = 5 * 60 * 1000;
 
-function storageKey(e){return 'census_'+e.replace(/[@.]/g,'_')}
-function getStorage(e){const r=localStorage.getItem(storageKey(e));return r?JSON.parse(r):{lastSummaryDate:null,unlockedUntil:null}}
-function setStorage(e,d){localStorage.setItem(storageKey(e),JSON.stringify(d))}
-function today(){return new Date().toISOString().split('T')[0]}
-function daysBetween(d1,d2){if(!d1)return 0;return Math.floor((new Date(d2)-new Date(d1))/(1000*60*60*24))}
+let currentUser = null;
+let history = [];
+let isLoading = false;
+let countdownInterval = null;
 
-function doLogin(){
-  const email=document.getElementById('emailInput').value.trim().toLowerCase();
-  const errEl=document.getElementById('loginError');
-  errEl.style.display='none';
-  if(!email){showLoginError('Ingresá tu mail.');return}
-  const user=ALLOWED_USERS[email];
-  if(!user){showLoginError('Mail no reconocido. Consultá a Matías.');return}
-  const storage=getStorage(email);
-  const todayStr=today();
-  let missed=storage.lastSummaryDate?Math.max(0,daysBetween(storage.lastSummaryDate,todayStr)-1):0;
-  if(storage.unlockedUntil&&storage.unlockedUntil>=todayStr){missed=0;storage.unlockedUntil=null;setStorage(email,storage)}
-  // Socios y tercerizados no tienen bloqueo por resumen
-  if(missed>=MAX_MISSED_DAYS&&user.role!=='socio'&&user.role!=='tercerizado'){
-    document.getElementById('missedDays').textContent=missed;
-    showScreen('blockedScreen');return
+// ─── STORAGE ──────────────────────────────────────────────────────────────────
+function storageKey(e) { return 'census_' + e.replace(/[@.]/g, '_'); }
+function getStorage(e) { const r = localStorage.getItem(storageKey(e)); return r ? JSON.parse(r) : { lastSummaryDate: null }; }
+function setStorage(e, d) { localStorage.setItem(storageKey(e), JSON.stringify(d)); }
+function today() { return new Date().toISOString().split('T')[0]; }
+function daysBetween(d1, d2) { if (!d1) return 0; return Math.floor((new Date(d2) - new Date(d1)) / (1000 * 60 * 60 * 24)); }
+
+// ─── UNLOCK CODES ─────────────────────────────────────────────────────────────
+function saveCode(email, code) {
+  const codes = JSON.parse(localStorage.getItem('census_unlock_codes') || '{}');
+  codes[email] = { code, expires: Date.now() + CODE_DURATION_MS };
+  localStorage.setItem('census_unlock_codes', JSON.stringify(codes));
+}
+function validateCode(email, code) {
+  const codes = JSON.parse(localStorage.getItem('census_unlock_codes') || '{}');
+  const entry = codes[email];
+  if (!entry) return false;
+  if (Date.now() > entry.expires) return false;
+  return entry.code === code;
+}
+function consumeCode(email) {
+  const codes = JSON.parse(localStorage.getItem('census_unlock_codes') || '{}');
+  delete codes[email];
+  localStorage.setItem('census_unlock_codes', JSON.stringify(codes));
+}
+function generateRandom6() { return String(Math.floor(100000 + Math.random() * 900000)); }
+
+// ─── LOGIN ─────────────────────────────────────────────────────────────────────
+function doLogin() {
+  const email = document.getElementById('emailInput').value.trim().toLowerCase();
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  if (!email) { showLoginError('Ingresá tu mail.'); return; }
+  const user = ALLOWED_USERS[email];
+  if (!user) { showLoginError('Mail no reconocido. Consultá a Matías.'); return; }
+
+  const storage = getStorage(email);
+  const todayStr = today();
+  const missed = storage.lastSummaryDate ? Math.max(0, daysBetween(storage.lastSummaryDate, todayStr) - 1) : 0;
+  const canBlock = !NO_BLOCK_ROLES.includes(user.role);
+
+  if (canBlock && missed >= MAX_MISSED_DAYS) {
+    document.getElementById('missedDays').textContent = missed;
+    localStorage.setItem('census_pending_unlock', email);
+    showScreen('blockedScreen');
+    return;
   }
-  currentUser={email,...user,missed,todayStr};
-  document.getElementById('userBadge').style.display='block';
-  document.getElementById('userBadgeName').textContent=user.name;
-  document.getElementById('welcomeTitle').textContent=`Hola ${user.name}, ¿en qué te puedo ayudar hoy?`;
-  if(missed===1&&user.role!=='socio'&&user.role!=='tercerizado')
-    showAlert('alertBannerRed','alertTextRed',`Tenés <strong>1 día</strong> sin enviar el resumen. Si llegás a 3 días consecutivos, tu acceso se bloquea automáticamente.`);
-  else if(missed===2&&user.role!=='socio'&&user.role!=='tercerizado')
-    showAlert('alertBannerRed','alertTextRed',`⚠️ Tenés <strong>2 días</strong> sin enviar el resumen. Si no enviás el de hoy, mañana se bloquea tu acceso.`);
-  if(user.isNew)
-    showAlert('alertBannerYellow','alertTextYellow',`<strong>¡Bienvenido/a ${user.name}!</strong> Tu perfil fue dado de alta pero algunos aspectos de tu incorporación pueden no estar completamente configurados. Contactá a <strong>Santiago</strong> para confirmar tu lugar en el organigrama y flujos de trabajo.`);
+
+  currentUser = { email, ...user, missed, todayStr };
+  enterApp(user, missed);
+}
+
+function enterApp(user, missed) {
+  document.getElementById('userBadge').style.display = 'block';
+  document.getElementById('userBadgeName').textContent = user.name;
+
+  if (ADMIN_ROLES.includes(user.role)) {
+    populateUnlockSelect();
+    document.getElementById('adminWelcome').textContent = `Hola ${user.name}, ¿qué necesitás?`;
+    showScreen('adminScreen');
+    return;
+  }
+
+  goToChat();
+
+  // Alertas resumen — solo para roles que pueden bloquearse
+  if (canShowSummaryAlert(user.role)) {
+    if (missed === 1)
+      showAlert('alertBannerRed', 'alertTextRed', `Tenés <strong>1 día</strong> sin enviar el resumen. Si llegás a 3 días consecutivos, tu acceso se bloquea automáticamente.`);
+    else if (missed === 2)
+      showAlert('alertBannerRed', 'alertTextRed', `⚠️ Tenés <strong>2 días</strong> sin enviar el resumen. Si no enviás el de hoy, mañana se bloquea tu acceso.`);
+  }
+
+  // Socios: recordatorio suave
+  if (user.role === 'socio' && missed >= 1)
+    showAlert('alertBannerYellow', 'alertTextYellow', `Recordatorio: tenés <strong>${missed} día${missed > 1 ? 's' : ''}</strong> sin enviar el resumen de actividad.`);
+
+  if (user.isNew)
+    showAlert('alertBannerYellow', 'alertTextYellow', `<strong>¡Bienvenido/a ${user.name}!</strong> Tu perfil fue dado de alta pero algunos aspectos de tu incorporación pueden no estar completamente configurados. Contactá a <strong>Santiago</strong> para confirmar tu lugar en el organigrama y flujos de trabajo.`);
+}
+
+function canShowSummaryAlert(role) { return !['socio', 'tercerizado'].includes(role); }
+
+function goToChat() {
+  if (!currentUser) return;
+  document.getElementById('welcomeTitle').textContent = `Hola ${currentUser.name}, ¿en qué te puedo ayudar hoy?`;
   showScreen('chatScreen');
 }
 
-function showLoginError(msg){const el=document.getElementById('loginError');el.textContent=msg;el.style.display='block'}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function showAlert(bid,tid,msg){document.getElementById(tid).innerHTML=msg;document.getElementById(bid).classList.add('show')}
-function dismissAlert(bid){document.getElementById(bid).classList.remove('show')}
+// ─── UNLOCK ────────────────────────────────────────────────────────────────────
+function tryUnlock() {
+  const code = document.getElementById('unlockCodeInput').value.trim();
+  const email = localStorage.getItem('census_pending_unlock');
+  const errEl = document.getElementById('unlockError');
+  errEl.style.display = 'none';
+  if (!code || code.length !== 6) { showUnlockError('Ingresá el código de 6 dígitos.'); return; }
+  if (!email) { showUnlockError('Error: volvé a la pantalla de login.'); return; }
+  if (validateCode(email, code)) {
+    consumeCode(email);
+    const storage = getStorage(email);
+    storage.lastSummaryDate = today();
+    setStorage(email, storage);
+    localStorage.removeItem('census_pending_unlock');
+    const user = ALLOWED_USERS[email];
+    currentUser = { email, ...user, missed: 0, todayStr: today() };
+    enterApp(user, 0);
+  } else {
+    showUnlockError('Código incorrecto o expirado. Solicitá uno nuevo a tu supervisor.');
+  }
+}
 
-function buildSystemPrompt(user){
-  const newUserNote=user.isNew?`\nNOTA: ${user.name} es un ingreso reciente cuyo perfil puede no estar completamente configurado. Si pregunta sobre su rol o a quién reporta, indicale que coordine con Santiago antes de que el asistente pueda orientarlo con precisión en esos temas.\n`:'';
-  const roleNote=user.role==='socio'?`\nEstás hablando con uno de los socios del estudio. Podés responder con total detalle técnico y sin restricciones de escalamiento.\n`:
-    user.role==='tercerizado'?`\nEstás hablando con un contador tercerizado. Interactúa directamente con Matías, Joaquín y Santiago. No tiene equipo a cargo ni reporta a supervisores intermedios.\n`:'';
-  return`Sos el asistente operativo de Census, un estudio contable en Montevideo con espíritu innovador y valores tradicionales.
+function showUnlockError(msg) { const el = document.getElementById('unlockError'); el.textContent = msg; el.style.display = 'block'; }
 
-Estás hablando con ${user.name} (${user.email}). Su rol es: ${user.role}. ${user.supervisor?`Su supervisor directo es: ${user.supervisor}.`:''}
-${newUserNote}${roleNote}
+// ─── ADMIN ─────────────────────────────────────────────────────────────────────
+function populateUnlockSelect() {
+  const select = document.getElementById('unlockTarget');
+  select.innerHTML = '<option value="">— Elegí un usuario —</option>';
+  Object.entries(ALLOWED_USERS).forEach(([email, user]) => {
+    if (!ADMIN_ROLES.includes(user.role) && !NO_BLOCK_ROLES.includes(user.role)) {
+      const opt = document.createElement('option');
+      opt.value = email;
+      opt.textContent = `${user.name} (${email})`;
+      select.appendChild(opt);
+    }
+  });
+}
+
+function generateCode() {
+  const email = document.getElementById('unlockTarget').value;
+  if (!email) { alert('Elegí un usuario primero.'); return; }
+  const code = generateRandom6();
+  saveCode(email, code);
+  const user = ALLOWED_USERS[email];
+  document.getElementById('codeFor').textContent = `Para: ${user.name} (${email})`;
+  document.getElementById('bigCode').textContent = code;
+  document.getElementById('bigCode').style.opacity = '1';
+  document.getElementById('codeDisplay').style.display = 'block';
+  if (countdownInterval) clearInterval(countdownInterval);
+  const expiresAt = Date.now() + CODE_DURATION_MS;
+  function tick() {
+    const remaining = Math.max(0, expiresAt - Date.now());
+    const mins = Math.floor(remaining / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
+    document.getElementById('countdown').textContent =
+      remaining > 0 ? `Expira en ${mins}:${secs.toString().padStart(2, '0')}` : 'Código expirado';
+    if (remaining === 0) { clearInterval(countdownInterval); document.getElementById('bigCode').style.opacity = '0.3'; }
+  }
+  tick();
+  countdownInterval = setInterval(tick, 1000);
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function showLoginError(msg) { const el = document.getElementById('loginError'); el.textContent = msg; el.style.display = 'block'; }
+function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function showAlert(bid, tid, msg) { document.getElementById(tid).innerHTML = msg; document.getElementById(bid).classList.add('show'); }
+function dismissAlert(bid) { document.getElementById(bid).classList.remove('show'); }
+
+// ─── SYSTEM PROMPT ─────────────────────────────────────────────────────────────
+function buildSystemPrompt(user) {
+  const newNote = user.isNew ? `\nNOTA: ${user.name} es un ingreso reciente cuyo perfil puede no estar completamente configurado. Si pregunta sobre su rol o a quién reporta, indicale que coordine con Santiago.\n` : '';
+  const roleNote = user.role === 'socio'
+    ? `\nEstás hablando con uno de los socios del estudio. Respondé con total detalle técnico y sin restricciones de escalamiento.\n`
+    : user.role === 'tercerizado'
+    ? `\nEstás hablando con un contador tercerizado. Interactúa directamente con Matías, Joaquín y Santiago. No tiene equipo a cargo ni reporta a supervisores intermedios.\n`
+    : '';
+
+  return `Sos el asistente operativo de Census, un estudio contable en Montevideo con espíritu innovador y valores tradicionales.
+
+Estás hablando con ${user.name} (${user.email}). Su rol es: ${user.role}. ${user.supervisor ? `Su supervisor directo es: ${user.supervisor}.` : ''}
+${newNote}${roleNote}
 Ajustá tus respuestas según el rol:
-- Auxiliar junior (Antonela o Federica): su primer escalamiento es a su supervisor directo antes de ir a Matías.
-- Auxiliar senior (Valentino o Patricia): fomentá la autonomía. Deben resolver antes de escalar, y escalar a Matías, no a los socios.
+- Auxiliar junior (Antonela o Federica): su primer escalamiento es al supervisor directo antes de ir a Matías.
+- Auxiliar senior (Valentino o Patricia): fomentá la autonomía. Escalar a Matías, no a los socios.
 - Matías: respondé con detalle técnico cuando corresponda.
-- Socios (Santiago o Joaquín): sin restricciones de escalamiento, total detalle.
+- Socios (Santiago o Joaquín): sin restricciones, total detalle.
 - Tercerizados: interactúan con Matías, Joaquín y Santiago directamente.
 
 EL EQUIPO
@@ -272,134 +477,129 @@ EL EQUIPO
 - Tercerizados: N. González (ngonzalez@censusuy.com), N. Moure (nmoure@censusuy.com).
 
 Canal preferido siempre: mail. WhatsApp es residual.
-
-Escalamiento consultas de clientes: Antonela→Valentino→Matías→Socios / Federica→Patricia→Matías→Socios.
-Escalamiento consultas generales: entre pares→supervisor (cruzado)→Matías. No llegan a socios.
+Escalamiento clientes: Antonela→Valentino→Matías→Socios / Federica→Patricia→Matías→Socios.
+Escalamiento general: entre pares→supervisor cruzado→Matías. No llegan a socios.
 
 CULTURA AUTODIDACTA
-Antes de consultar: 1) instructivos oficiales del organismo, 2) llamar al organismo, 3) CADE (cade.com.uy), 4) ConsultaX (consultax.com.uy), 5) escalar.
+Antes de consultar: 1) instructivos oficiales, 2) llamar al organismo, 3) CADE (cade.com.uy), 4) ConsultaX (consultax.com.uy), 5) escalar.
 
 TRÁMITES
-Identificar organismo: MTOP (transporte), FOCER (construcción/cesantía), DGI (impuestos), BPS (seguridad social), MTSS (trabajo), migracion.minterior.gub.uy, etc. Solo sitios oficiales, nunca foros. Leer trámite completo antes de iniciar. Seguimiento hasta completar. Notariales: Matías→Joaquín→Santiago. Escribanas: Eugenia Gómez Ipar y Gianella Guarino.
+Identificar organismo: MTOP (transporte), FOCER (construcción/cesantía), DGI (impuestos), BPS (seguridad social), MTSS (trabajo), migracion.minterior.gub.uy, etc. Solo sitios oficiales. Leer trámite completo antes de iniciar. Seguimiento hasta completar. Notariales: Matías→Joaquín→Santiago. Escribanas: Eugenia Gómez Ipar y Gianella Guarino.
 
-CODIFICADOR BPS
-Versión 34 (09/02/2026). Verificar siempre la más reciente en bps.gub.uy.
+CODIFICADOR BPS: Versión 34 (09/02/2026). Verificar siempre la más reciente en bps.gub.uy.
 
-SEGUIMIENTO DE TRÁMITES
-Cada 2-3 días hasta completarse. Responsable: quien lo inició.
+SEGUIMIENTO: Cada 2-3 días hasta completarse. Responsable: quien lo inició.
 
-PLAZOS BPS
-Altas: mismo día sin excepción (planilla MTSS puede esperar, el alta NO). Bajas: 5 días hábiles.
+PLAZOS BPS: Altas mismo día sin excepción (planilla MTSS puede esperar, el alta NO). Bajas: 5 días hábiles.
 
-PLAZOS CLIENTES
-Liquidaciones, salarios, egresos, licencias: 48 horas hábiles.
+PLAZOS CLIENTES: Liquidaciones, salarios, egresos, licencias: 48 horas hábiles.
 
 PLAN IN Y STEP
-Plan In (uy.plan-in.net): CRM. Toda tarea debe estar cargada. Recurrentes: ya cargadas. Nuevas: ticket con vencimiento. Tiempo al cliente real, no a "Census". Soporte: soporte@plan-in.net.
+Plan In (uy.plan-in.net): CRM. Toda tarea cargada. Recurrentes: ya cargadas. Nuevas: ticket con vencimiento. Tiempo al cliente real, no a "Census". Soporte: soporte@plan-in.net.
 STeP: contabilización y liquidación. Dudas: WhatsApp con STeP. Capacitaciones: https://drive.google.com/drive/folders/1X89q4gzIwT-eWmNvTR9tYWSKPJwUlWyb. Plan In migrará a STeP próximamente.
 
-MAILS
-Ningún mail sin respuesta. Si no se resuelve en el día: confirmar recepción + cargar en Plan In. Responder todos los ítems en un único correo. Al revisar un mail: pedir siempre el mail original.
+MAILS: Ningún mail sin respuesta. Si no se resuelve en el día: confirmar recepción + cargar en Plan In. Responder todos los ítems en un único correo. Al revisar un mail: pedir siempre el mail original.
 
-AUSENCIAS Y HORARIOS
-Licencias, días de estudio, llegadas tarde, médicos: consultar con Matías. No contactar socios directamente.
+AUSENCIAS Y HORARIOS: Licencias, días de estudio, llegadas tarde, médicos: consultar con Matías. No contactar socios directamente.
 
-REMUNERACIÓN
-Sueldos/pagos/recibos: directamente con Joaquín. Aumentos/cambios de carga/horario: primero Matías, luego escala a Santiago y Joaquín.
+REMUNERACIÓN: Sueldos/pagos/recibos: directamente con Joaquín. Aumentos/cambios de carga/horario: primero Matías, luego escala a Santiago y Joaquín.
 
-COMUNICACIÓN PROACTIVA
-Avisar ante dudas, vencimientos en riesgo o tareas que no se entienden. El silencio no es válido.
+COMUNICACIÓN PROACTIVA: Avisar ante dudas, vencimientos en riesgo o tareas que no se entienden. El silencio no es válido.
 
-CRITERIO Y AUTONOMÍA
-Ante "qué hago": preguntar qué opciones ve y cuál elegiría. Confirmar si es correcto, corregir si no. Fomentar autonomía siempre. Solo derivar a Matías si genuinamente supera al auxiliar.
+CRITERIO Y AUTONOMÍA: Ante "qué hago": preguntar qué opciones ve y cuál elegiría. Confirmar si es correcto, corregir si no. Fomentar autonomía. Solo derivar a Matías si genuinamente supera al auxiliar.
 
-TRABAJO DE ENRIQUE (EX COLABORADOR)
-Todo lo realizado por Enrique debe reconfirmarse antes de darlo por bueno. Consultar a Matías.
+TRABAJO DE ENRIQUE (EX COLABORADOR): Todo lo realizado por Enrique debe reconfirmarse antes de darlo por bueno. Consultar a Matías.
 
-LO QUE NO PODÉS RESOLVER SOLO
-Decisiones sobre clientes con criterio profesional de peso, normativa ambigua con consecuencias importantes, cualquier cosa que requiera criterio de los socios. Ante duda: validar con Matías primero.
+LO QUE NO PODÉS RESOLVER SOLO: Decisiones sobre clientes con criterio profesional de peso, normativa ambigua con consecuencias importantes, cualquier cosa que requiera criterio de los socios. Ante duda: validar con Matías primero.
 
-TONO
-Directo, claro, profesional pero cercano. Sin tecnicismos innecesarios. Pasos numerados para procedimientos. Si no sabés algo con certeza, decilo.`;
+TONO: Directo, claro, profesional pero cercano. Sin tecnicismos innecesarios. Pasos numerados para procedimientos. Si no sabés algo con certeza, decilo.`;
 }
 
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
-function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}}
-function quickSend(text){document.getElementById('input').value=text;sendMessage()}
+// ─── CHAT ──────────────────────────────────────────────────────────────────────
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function quickSend(text) { document.getElementById('input').value = text; sendMessage(); }
 
-function addMessage(role,content){
-  const welcome=document.getElementById('welcome');
-  if(welcome)welcome.remove();
-  const messages=document.getElementById('messages');
-  const div=document.createElement('div');div.className=`message ${role}`;
-  const avatar=document.createElement('div');avatar.className=`avatar ${role}`;
-  avatar.textContent=role==='bot'?'C':(currentUser?currentUser.name.substring(0,3):'Vos');
-  const bubble=document.createElement('div');bubble.className='bubble';
-  bubble.innerHTML=formatMessage(content);
-  div.appendChild(avatar);div.appendChild(bubble);
-  messages.appendChild(div);messages.scrollTop=messages.scrollHeight;
+function addMessage(role, content) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div'); div.className = `message ${role}`;
+  const avatar = document.createElement('div'); avatar.className = `avatar ${role}`;
+  avatar.textContent = role === 'bot' ? 'C' : (currentUser ? currentUser.name.substring(0, 3) : 'Vos');
+  const bubble = document.createElement('div'); bubble.className = 'bubble';
+  bubble.innerHTML = formatMessage(content);
+  div.appendChild(avatar); div.appendChild(bubble);
+  messages.appendChild(div); messages.scrollTop = messages.scrollHeight;
 }
 
-function formatMessage(text){
+function formatMessage(text) {
   return text
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/^#{1,3} (.*?)$/gm,'<strong>$1</strong>')
-    .replace(/^\d+\. (.*?)$/gm,'<li>$1</li>')
-    .replace(/^[-•] (.*?)$/gm,'<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g,m=>`<ul>${m}</ul>`)
-    .replace(/\n\n/g,'</p><p>')
-    .replace(/\n/g,'<br>')
-    .replace(/^(?!<)(.+)$/gm,'<p>$1</p>')
-    .replace(/<p><\/p>/g,'');
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^#{1,3} (.*?)$/gm, '<strong>$1</strong>')
+    .replace(/^\d+\. (.*?)$/gm, '<li>$1</li>')
+    .replace(/^[-•] (.*?)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    .replace(/^(?!<)(.+)$/gm, '<p>$1</p>')
+    .replace(/<p><\/p>/g, '');
 }
 
-function showTyping(){
-  const messages=document.getElementById('messages');
-  const div=document.createElement('div');div.className='typing';div.id='typing';
-  const avatar=document.createElement('div');avatar.className='avatar bot';avatar.textContent='C';
-  const dots=document.createElement('div');dots.className='typing-dots';
-  dots.innerHTML='<span></span><span></span><span></span>';
-  div.appendChild(avatar);div.appendChild(dots);
-  messages.appendChild(div);messages.scrollTop=messages.scrollHeight;
+function showTyping() {
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div'); div.className = 'typing'; div.id = 'typing';
+  const avatar = document.createElement('div'); avatar.className = 'avatar bot'; avatar.textContent = 'C';
+  const dots = document.createElement('div'); dots.className = 'typing-dots';
+  dots.innerHTML = '<span></span><span></span><span></span>';
+  div.appendChild(avatar); div.appendChild(dots);
+  messages.appendChild(div); messages.scrollTop = messages.scrollHeight;
 }
-function hideTyping(){const t=document.getElementById('typing');if(t)t.remove()}
+function hideTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
 
-async function sendMessage(){
-  const input=document.getElementById('input');
-  const text=input.value.trim();
-  if(!text||isLoading)return;
-  isLoading=true;document.getElementById('sendBtn').disabled=true;
-  input.value='';input.style.height='auto';
-  addMessage('user',text);history.push({role:'user',content:text});
+async function sendMessage() {
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+  isLoading = true; document.getElementById('sendBtn').disabled = true;
+  input.value = ''; input.style.height = 'auto';
+  addMessage('user', text);
+  history.push({ role: 'user', content: text });
   showTyping();
-  try{
-    const response=await fetch('https://census-proxy.sfernandez-8a7.workers.dev',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:buildSystemPrompt(currentUser),messages:history})
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: buildSystemPrompt(currentUser),
+        messages: history
+      })
     });
-    const data=await response.json();
+    const data = await response.json();
     hideTyping();
-    const reply=data.content?.[0]?.text||'No pude procesar tu consulta. Intentá de nuevo.';
-    history.push({role:'assistant',content:reply});
-    addMessage('bot',reply);
-  }catch(err){
+    const reply = data.content?.[0]?.text || 'No pude procesar tu consulta. Intentá de nuevo.';
+    history.push({ role: 'assistant', content: reply });
+    addMessage('bot', reply);
+  } catch (err) {
     hideTyping();
-    addMessage('bot','Hubo un problema de conexión. Por favor intentá de nuevo.');
+    addMessage('bot', 'Hubo un problema de conexión. Por favor intentá de nuevo.');
   }
-  isLoading=false;document.getElementById('sendBtn').disabled=false;input.focus();
+  isLoading = false; document.getElementById('sendBtn').disabled = false; input.focus();
 }
 
-function sendSummary(){
-  if(history.length===0){alert('No hay conversación para resumir todavía.');return}
-  const dateStr=new Date().toLocaleDateString('es-UY',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  let body=`Resumen de actividad — Asistente Operativo Census\nUsuario: ${currentUser.name} (${currentUser.email})\nFecha: ${dateStr}\n─────────────────────────────────────\n\n`;
-  history.forEach(msg=>{const label=msg.role==='user'?currentUser.name:'Asistente';body+=`[${label}]\n${msg.content}\n\n`});
-  const subject=`Resumen Asistente Census — ${currentUser.name} — ${new Date().toLocaleDateString('es-UY')}`;
-  window.location.href=`mailto:${SUMMARY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  const storage=getStorage(currentUser.email);
-  storage.lastSummaryDate=today();
-  setStorage(currentUser.email,storage);
+// ─── RESUMEN ───────────────────────────────────────────────────────────────────
+function sendSummary() {
+  if (history.length === 0) { alert('No hay conversación para resumir todavía.'); return; }
+  const dateStr = new Date().toLocaleDateString('es-UY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  let body = `Resumen de actividad — Asistente Operativo Census\nUsuario: ${currentUser.name} (${currentUser.email})\nFecha: ${dateStr}\n─────────────────────────────────────\n\n`;
+  history.forEach(msg => { body += `[${msg.role === 'user' ? currentUser.name : 'Asistente'}]\n${msg.content}\n\n`; });
+  const subject = `Resumen Asistente Census — ${currentUser.name} — ${new Date().toLocaleDateString('es-UY')}`;
+  window.location.href = `mailto:${SUMMARY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const storage = getStorage(currentUser.email);
+  storage.lastSummaryDate = today();
+  setStorage(currentUser.email, storage);
   dismissAlert('alertBannerRed');
 }
 </script>
