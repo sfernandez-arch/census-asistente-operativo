@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Census — Asistente Operativo</title>
+<title>Néstor — Asistente Operativo Census</title>
 <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:#2a2a2a;--red:#B91D21;--red-dark:#951914;--red-glow:rgba(185,29,33,0.15);--yellow:#d4a017;--yellow-glow:rgba(212,160,23,0.12);--text:#ffffff;--text-muted:#ADADAD;--text-dim:#666666}
+  :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:#2a2a2a;--red:#B91D21;--red-dark:#951914;--red-glow:rgba(185,29,33,0.15);--text:#ffffff;--text-muted:#ADADAD;--text-dim:#666666}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
   header{background:#000;border-bottom:1px solid var(--border);padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
@@ -22,8 +22,6 @@
   @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,130,0.4)}50%{box-shadow:0 0 0 5px rgba(76,175,130,0)}}
   .screen{display:none;flex:1;flex-direction:column}
   .screen.active{display:flex}
-
-  /* LOGIN */
   #loginScreen{align-items:center;justify-content:center;padding:40px 20px}
   .login-box{width:100%;max-width:420px;animation:fadeUp 0.6s ease both}
   .login-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:16px}
@@ -37,8 +35,6 @@
   .btn-primary{width:100%;background:var(--red);border:none;border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:white;cursor:pointer;transition:background 0.2s;margin-bottom:12px}
   .btn-primary:hover{background:var(--red-dark)}
   .login-error{font-size:13px;color:#ff6b6b;margin-top:8px;display:none;text-align:center}
-
-  /* BLOCKED */
   #blockedScreen{align-items:center;justify-content:center;padding:40px 20px}
   .blocked-box{width:100%;max-width:420px;animation:fadeUp 0.6s ease both}
   .blocked-icon{width:56px;height:56px;border:2px solid var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px}
@@ -53,38 +49,32 @@
   .btn-unlock:hover{border-color:var(--red);color:var(--text);background:var(--red-glow)}
   .unlock-error{font-size:13px;color:#ff6b6b;margin-top:8px;display:none;text-align:center}
   .unlock-hint{font-size:12px;color:var(--text-dim);text-align:center;margin-top:16px;line-height:1.6}
-
-  /* ADMIN */
   #adminScreen{align-items:center;justify-content:center;padding:40px 20px}
   .admin-box{width:100%;max-width:520px;animation:fadeUp 0.6s ease both}
-  .admin-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:16px}
+  .admin-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;border:1px solid var(--border);display:inline-block;padding:4px 10px;border-radius:2px}
   .admin-box h2{font-family:'Work Sans',sans-serif;font-size:24px;font-weight:600;margin-bottom:8px}
-  .admin-divider{width:40px;height:2px;background:var(--yellow);margin:16px 0 28px}
+  .admin-divider{width:40px;height:2px;background:var(--red);margin:16px 0 28px}
   .admin-section{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:24px;margin-bottom:16px}
   .admin-section h3{font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
   .admin-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:12px 16px;font-family:'Lato',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:16px;cursor:pointer}
-  .admin-select:focus{border-color:var(--yellow)}
-  .btn-generate{width:100%;background:var(--yellow);border:none;border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#000;cursor:pointer;transition:opacity 0.2s}
-  .btn-generate:hover{opacity:0.85}
-  .code-display{display:none;margin-top:20px;text-align:center;background:var(--surface2);border:1px solid rgba(212,160,23,0.3);border-radius:3px;padding:24px}
+  .admin-select:focus{border-color:var(--red)}
+  .btn-generate{width:100%;background:var(--red);border:none;border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:white;cursor:pointer;transition:background 0.2s}
+  .btn-generate:hover{background:var(--red-dark)}
+  .code-display{display:none;margin-top:20px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:24px}
   .code-for{font-size:13px;color:var(--text-muted);margin-bottom:8px}
-  .big-code{font-family:'Work Sans',sans-serif;font-size:48px;font-weight:600;letter-spacing:14px;color:var(--yellow);margin-bottom:6px}
+  .big-code{font-family:'Work Sans',sans-serif;font-size:48px;font-weight:600;letter-spacing:14px;color:var(--red);margin-bottom:6px}
   .code-expiry{font-size:12px;color:var(--text-dim)}
-  .countdown{font-size:13px;color:var(--yellow);margin-top:8px;font-weight:600}
+  .countdown{font-size:13px;color:var(--red);margin-top:8px;font-weight:600}
   .btn-chat{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;transition:all 0.2s;margin-top:8px}
   .btn-chat:hover{border-color:var(--red);color:var(--text)}
-
-  /* ALERTS */
   .alert-banner{border-radius:3px;padding:14px 16px;margin:16px 0 0;display:none;animation:fadeUp 0.4s ease both}
   .alert-banner.show{display:flex;align-items:flex-start;gap:12px}
   .alert-banner.alert-red{background:rgba(185,29,33,0.12);border:1px solid rgba(185,29,33,0.35)}
-  .alert-banner.alert-yellow{background:var(--yellow-glow);border:1px solid rgba(212,160,23,0.4)}
+  .alert-banner.alert-yellow{background:rgba(180,140,30,0.1);border:1px solid rgba(180,140,30,0.3)}
   .alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
   .alert-text{font-size:13px;color:var(--text-muted);line-height:1.6;flex:1}
   .alert-text strong{color:var(--text)}
   .alert-dismiss{margin-left:8px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:18px;flex-shrink:0;padding:0 4px;line-height:1}
-
-  /* CHAT */
   #chatScreen{flex-direction:column}
   main{flex:1;display:flex;flex-direction:column;max-width:800px;width:100%;margin:0 auto;padding:0 20px}
   #messages{flex:1;padding:32px 0 16px;display:flex;flex-direction:column;gap:24px;min-height:calc(100vh - 240px)}
@@ -121,6 +111,13 @@
   .input-area{position:sticky;bottom:0;background:linear-gradient(to top,var(--bg) 75%,transparent);padding:12px 0 24px}
   .input-wrap{display:flex;gap:10px;align-items:flex-end;background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:12px 12px 12px 18px;transition:border-color 0.2s}
   .input-wrap:focus-within{border-color:var(--red)}
+  .attach-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:4px;font-size:18px;flex-shrink:0;transition:color 0.2s;display:flex;align-items:center}
+  .attach-btn:hover{color:var(--text-muted)}
+  #fileInput{display:none}
+  .file-preview{font-size:12px;color:var(--text-muted);padding:6px 0 0;display:none}
+  .file-preview.show{display:flex;align-items:center;gap:8px}
+  .file-preview .file-name{color:var(--red);font-weight:500}
+  .file-preview .remove-file{cursor:pointer;color:var(--text-dim);font-size:14px}
   textarea{flex:1;border:none;outline:none;resize:none;font-family:'Lato',sans-serif;font-size:14px;color:var(--text);background:transparent;line-height:1.5;max-height:120px;min-height:24px;font-weight:300}
   textarea::placeholder{color:var(--text-dim)}
   .send-btn{width:36px;height:36px;background:var(--red);border:none;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s}
@@ -144,7 +141,7 @@
   <div class="header-left">
     <img src="https://censusuy.com/wp-content/uploads/2021/02/cropped-PNG-164x55.png" alt="Census" class="logo-img">
     <div class="header-divider"></div>
-    <span class="header-label">Asistente Operativo</span>
+    <span class="header-label">Néstor · Asistente Operativo</span>
   </div>
   <div class="header-right">
     <div class="user-badge" id="userBadge">Sesión: <span id="userBadgeName"></span></div>
@@ -156,9 +153,9 @@
 <div class="screen active" id="loginScreen">
   <div class="login-box">
     <div class="login-tag">Census · Acceso interno</div>
-    <h2>Ingresá al asistente</h2>
+    <h2>Hola, soy Néstor</h2>
     <div class="login-divider"></div>
-    <p>Identificate con tu mail del estudio para continuar.</p>
+    <p>El asistente operativo de Census. Ingresá con tu mail del estudio para empezar.</p>
     <div class="field-label">Tu mail</div>
     <input type="email" class="field-input" id="emailInput" placeholder="tu@censusuy.com" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn-primary" onclick="doLogin()">Ingresar</button>
@@ -174,9 +171,7 @@
     <p class="sub">Tenés <strong id="missedDays"></strong> días consecutivos sin enviar el resumen.<br>Solicitá un código de desbloqueo a tu supervisor.</p>
     <div class="blocked-divider"></div>
     <div class="unlock-label">Código de desbloqueo</div>
-    <input type="text" class="code-input" id="unlockCodeInput" placeholder="000000" maxlength="6"
-      oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-      onkeydown="if(event.key==='Enter')tryUnlock()">
+    <input type="text" class="code-input" id="unlockCodeInput" placeholder="000000" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onkeydown="if(event.key==='Enter')tryUnlock()">
     <button class="btn-unlock" onclick="tryUnlock()">Desbloquear acceso</button>
     <div class="unlock-error" id="unlockError"></div>
     <div class="unlock-hint">El código lo genera Matías, Santiago o Joaquín.<br>Es válido por 5 minutos.</div>
@@ -203,7 +198,7 @@
         <div class="countdown" id="countdown"></div>
       </div>
     </div>
-    <button class="btn-chat" onclick="goToChat()">→ Ir al chat del asistente</button>
+    <button class="btn-chat" onclick="goToChat()">→ Ir al chat con Néstor</button>
   </div>
 </div>
 
@@ -216,35 +211,41 @@
       <button class="alert-dismiss" onclick="dismissAlert('alertBannerRed')">×</button>
     </div>
     <div class="alert-banner alert-yellow" id="alertBannerYellow">
-      <div class="alert-icon">🟡</div>
+      <div class="alert-icon">💡</div>
       <div class="alert-text" id="alertTextYellow"></div>
       <button class="alert-dismiss" onclick="dismissAlert('alertBannerYellow')">×</button>
     </div>
     <div id="messages">
       <div class="welcome" id="welcome">
-        <div class="welcome-tag">Census · Asistente interno</div>
+        <div class="welcome-tag">Census · Néstor</div>
         <h2 id="welcomeTitle">Hola, ¿en qué te puedo ayudar hoy?</h2>
         <div class="welcome-divider"></div>
-        <p>Consultame sobre trámites, normativa, redacción de mails, procedimientos internos, vencimientos y más.</p>
+        <p>Consultame sobre trámites, normativa, procedimientos, vencimientos, redacción de mails y más.</p>
         <div class="quick-actions">
           <button class="quick-btn" onclick="quickSend('¿Cuál es el plazo para comunicar un alta en BPS?')">Altas en BPS</button>
           <button class="quick-btn" onclick="quickSend('¿Cómo escalo una consulta de un cliente?')">Cómo escalar</button>
           <button class="quick-btn" onclick="quickSend('¿Cómo cargo una tarea en Plan In?')">Plan In</button>
           <button class="quick-btn" onclick="quickSend('Necesito revisar un mail antes de enviarlo')">Revisar un mail</button>
-          <button class="quick-btn" onclick="quickSend('¿Cómo busco información sobre un trámite?')">Buscar trámites</button>
-          <button class="quick-btn" onclick="quickSend('¿Cuál es el plazo para liquidaciones y sueldos?')">Plazos de entrega</button>
+          <button class="quick-btn" onclick="quickSend('¿Cuánto es el anticipo mensual de ICOSA en 2026?')">ICOSA 2026</button>
+          <button class="quick-btn" onclick="quickSend('¿Cuándo vence NO CEDE en abril 2026?')">Vencimientos DGI</button>
         </div>
       </div>
     </div>
+    <div class="file-preview" id="filePreview">
+      📎 <span class="file-name" id="fileName"></span>
+      <span class="remove-file" onclick="removeFile()">✕</span>
+    </div>
     <div class="input-area">
       <div class="input-wrap">
+        <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Adjuntar archivo">📎</button>
+        <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFileSelect(event)">
         <textarea id="input" placeholder="Escribí tu consulta..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
         <button class="send-btn" id="sendBtn" onclick="sendMessage()">
           <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
         </button>
       </div>
       <div class="bottom-bar">
-        <div class="input-hint">Enter para enviar · Shift+Enter para nueva línea</div>
+        <div class="input-hint">Enter para enviar · Shift+Enter para nueva línea · 📎 para adjuntar</div>
         <button class="summary-btn" onclick="sendSummary()">📋 Enviar resumen del día</button>
       </div>
     </div>
@@ -254,353 +255,480 @@
 <script>
 // ─── CONFIGURACIÓN ────────────────────────────────────────────────────────────
 const API_URL = 'https://census-proxy.sfernandez-8a7.workers.dev';
-
-// CONVENCIÓN DE MAILS: inicial del nombre + apellido completo @censusuy.com
-// Ejemplo: Juan Pérez → jperez@censusuy.com
-// Nuevos ingresos: agregar con isNew: true hasta que Santiago confirme el perfil
-
-const ALLOWED_USERS = {
-  // Auxiliares junior — escalan a su supervisor directo
-  'arucci@censusuy.com':     { name: 'Antonela',    role: 'junior',      supervisor: 'Valentino', isNew: false },
-  'ftorres@censusuy.com':    { name: 'Federica',    role: 'junior',      supervisor: 'Patricia',  isNew: false },
-  // Auxiliares senior — escalan a Matías
-  'vbertinat@censusuy.com':  { name: 'Valentino',   role: 'senior',      supervisor: 'Matías',    isNew: false },
-  'prodriguez@censusuy.com': { name: 'Patricia',    role: 'senior',      supervisor: 'Matías',    isNew: false },
-  // Encargado general
-  'mmorales@censusuy.com':   { name: 'Matías',      role: 'encargado',   supervisor: 'Socios',    isNew: false },
-  // Socios — nunca se bloquean, solo recordatorio suave
-  'sfernandez@censusuy.com': { name: 'Santiago',    role: 'socio',       supervisor: null,        isNew: false },
-  'jsilvera@censusuy.com':   { name: 'Joaquín',     role: 'socio',       supervisor: null,        isNew: false },
-  // Contadores tercerizados — nunca se bloquean
-  'ngonzalez@censusuy.com':  { name: 'N. González', role: 'tercerizado', supervisor: 'Matías',    isNew: false },
-  'nmoure@censusuy.com':     { name: 'N. Moure',    role: 'tercerizado', supervisor: 'Matías',    isNew: false },
-  // NUEVOS INGRESOS: agregar acá con isNew: true
-  // 'napellido@censusuy.com': { name: 'Nombre', role: 'junior', supervisor: 'Valentino', isNew: true },
-};
-
-// Roles que pueden generar códigos y ver panel admin
-const ADMIN_ROLES = ['socio', 'encargado'];
-// Roles que nunca se bloquean
-const NO_BLOCK_ROLES = ['socio', 'tercerizado'];
-
+const SUMMARY_ENDPOINT = 'https://census-proxy.sfernandez-8a7.workers.dev/send-summary';
 const SUMMARY_EMAIL = 'contacto@censusuy.com';
 const MAX_MISSED_DAYS = 3;
 const CODE_DURATION_MS = 5 * 60 * 1000;
+
+// CONVENCIÓN DE MAILS: inicial del nombre + apellido @censusuy.com
+const ALLOWED_USERS = {
+  'arucci@censusuy.com':     { name: 'Antonela',    role: 'junior',      supervisor: 'Valentino', isNew: false },
+  'ftorres@censusuy.com':    { name: 'Federica',    role: 'junior',      supervisor: 'Patricia',  isNew: false },
+  'vbertinat@censusuy.com':  { name: 'Valentino',   role: 'senior',      supervisor: 'Matías',    isNew: false },
+  'prodriguez@censusuy.com': { name: 'Patricia',    role: 'senior',      supervisor: 'Matías',    isNew: false },
+  'mmorales@censusuy.com':   { name: 'Matías',      role: 'encargado',   supervisor: 'Socios',    isNew: false },
+  'sfernandez@censusuy.com': { name: 'Santiago',    role: 'socio',       supervisor: null,        isNew: false },
+  'jsilvera@censusuy.com':   { name: 'Joaquín',     role: 'socio',       supervisor: null,        isNew: false },
+  'ngonzalez@censusuy.com':  { name: 'N. González', role: 'tercerizado', supervisor: 'Matías',    isNew: false },
+  'nmoure@censusuy.com':     { name: 'N. Moure',    role: 'tercerizado', supervisor: 'Matías',    isNew: false },
+  // NUEVOS INGRESOS: agregar acá con isNew: true hasta que Santiago confirme el perfil
+  // 'napellido@censusuy.com': { name: 'Nombre', role: 'junior', supervisor: 'Valentino', isNew: true },
+};
+
+const ADMIN_ROLES = ['socio', 'encargado'];
+const NO_BLOCK_ROLES = ['socio', 'tercerizado'];
 
 let currentUser = null;
 let history = [];
 let isLoading = false;
 let countdownInterval = null;
+let attachedFile = null;
+let attachedFileData = null;
 
 // ─── STORAGE ──────────────────────────────────────────────────────────────────
-function storageKey(e) { return 'census_' + e.replace(/[@.]/g, '_'); }
-function getStorage(e) { const r = localStorage.getItem(storageKey(e)); return r ? JSON.parse(r) : { lastSummaryDate: null }; }
-function setStorage(e, d) { localStorage.setItem(storageKey(e), JSON.stringify(d)); }
-function today() { return new Date().toISOString().split('T')[0]; }
-function daysBetween(d1, d2) { if (!d1) return 0; return Math.floor((new Date(d2) - new Date(d1)) / (1000 * 60 * 60 * 24)); }
+function storageKey(e){return 'census_'+e.replace(/[@.]/g,'_')}
+function getStorage(e){const r=localStorage.getItem(storageKey(e));return r?JSON.parse(r):{lastSummaryDate:null}}
+function setStorage(e,d){localStorage.setItem(storageKey(e),JSON.stringify(d))}
+function today(){return new Date().toISOString().split('T')[0]}
+function daysBetween(d1,d2){if(!d1)return 0;return Math.floor((new Date(d2)-new Date(d1))/(1000*60*60*24))}
 
 // ─── UNLOCK CODES ─────────────────────────────────────────────────────────────
-function saveCode(email, code) {
-  const codes = JSON.parse(localStorage.getItem('census_unlock_codes') || '{}');
-  codes[email] = { code, expires: Date.now() + CODE_DURATION_MS };
-  localStorage.setItem('census_unlock_codes', JSON.stringify(codes));
-}
-function validateCode(email, code) {
-  const codes = JSON.parse(localStorage.getItem('census_unlock_codes') || '{}');
-  const entry = codes[email];
-  if (!entry) return false;
-  if (Date.now() > entry.expires) return false;
-  return entry.code === code;
-}
-function consumeCode(email) {
-  const codes = JSON.parse(localStorage.getItem('census_unlock_codes') || '{}');
-  delete codes[email];
-  localStorage.setItem('census_unlock_codes', JSON.stringify(codes));
-}
-function generateRandom6() { return String(Math.floor(100000 + Math.random() * 900000)); }
+function saveCode(email,code){const codes=JSON.parse(localStorage.getItem('census_unlock_codes')||'{}');codes[email]={code,expires:Date.now()+CODE_DURATION_MS};localStorage.setItem('census_unlock_codes',JSON.stringify(codes))}
+function validateCode(email,code){const codes=JSON.parse(localStorage.getItem('census_unlock_codes')||'{}');const entry=codes[email];if(!entry)return false;if(Date.now()>entry.expires)return false;return entry.code===code}
+function consumeCode(email){const codes=JSON.parse(localStorage.getItem('census_unlock_codes')||'{}');delete codes[email];localStorage.setItem('census_unlock_codes',JSON.stringify(codes))}
+function generateRandom6(){return String(Math.floor(100000+Math.random()*900000))}
 
-// ─── LOGIN ─────────────────────────────────────────────────────────────────────
-function doLogin() {
-  const email = document.getElementById('emailInput').value.trim().toLowerCase();
-  const errEl = document.getElementById('loginError');
-  errEl.style.display = 'none';
-  if (!email) { showLoginError('Ingresá tu mail.'); return; }
-  const user = ALLOWED_USERS[email];
-  if (!user) { showLoginError('Mail no reconocido. Consultá a Matías.'); return; }
-
-  const storage = getStorage(email);
-  const todayStr = today();
-  const missed = storage.lastSummaryDate ? Math.max(0, daysBetween(storage.lastSummaryDate, todayStr) - 1) : 0;
-  const canBlock = !NO_BLOCK_ROLES.includes(user.role);
-
-  if (canBlock && missed >= MAX_MISSED_DAYS) {
-    document.getElementById('missedDays').textContent = missed;
-    localStorage.setItem('census_pending_unlock', email);
-    showScreen('blockedScreen');
-    return;
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
+function doLogin(){
+  const email=document.getElementById('emailInput').value.trim().toLowerCase();
+  const errEl=document.getElementById('loginError');
+  errEl.style.display='none';
+  if(!email){showLoginError('Ingresá tu mail.');return}
+  const user=ALLOWED_USERS[email];
+  if(!user){showLoginError('Mail no reconocido. Consultá a Matías.');return}
+  const storage=getStorage(email);
+  const todayStr=today();
+  const missed=storage.lastSummaryDate?Math.max(0,daysBetween(storage.lastSummaryDate,todayStr)-1):0;
+  const canBlock=!NO_BLOCK_ROLES.includes(user.role);
+  if(canBlock&&missed>=MAX_MISSED_DAYS){
+    document.getElementById('missedDays').textContent=missed;
+    localStorage.setItem('census_pending_unlock',email);
+    showScreen('blockedScreen');return
   }
-
-  currentUser = { email, ...user, missed, todayStr };
-  enterApp(user, missed);
+  currentUser={email,...user,missed,todayStr};
+  enterApp(user,missed);
 }
 
-function enterApp(user, missed) {
-  document.getElementById('userBadge').style.display = 'block';
-  document.getElementById('userBadgeName').textContent = user.name;
-
-  if (ADMIN_ROLES.includes(user.role)) {
+function enterApp(user,missed){
+  document.getElementById('userBadge').style.display='block';
+  document.getElementById('userBadgeName').textContent=user.name;
+  if(ADMIN_ROLES.includes(user.role)){
     populateUnlockSelect();
-    document.getElementById('adminWelcome').textContent = `Hola ${user.name}, ¿qué necesitás?`;
-    showScreen('adminScreen');
-    return;
+    document.getElementById('adminWelcome').textContent=`Hola ${user.name}, ¿qué necesitás?`;
+    showScreen('adminScreen');return
   }
-
   goToChat();
-
-  // Alertas resumen — solo para roles que pueden bloquearse
-  if (canShowSummaryAlert(user.role)) {
-    if (missed === 1)
-      showAlert('alertBannerRed', 'alertTextRed', `Tenés <strong>1 día</strong> sin enviar el resumen. Si llegás a 3 días consecutivos, tu acceso se bloquea automáticamente.`);
-    else if (missed === 2)
-      showAlert('alertBannerRed', 'alertTextRed', `⚠️ Tenés <strong>2 días</strong> sin enviar el resumen. Si no enviás el de hoy, mañana se bloquea tu acceso.`);
+  const canShowAlert=!['socio','tercerizado'].includes(user.role);
+  if(canShowAlert){
+    if(missed===1)showAlert('alertBannerRed','alertTextRed',`Tenés <strong>1 día</strong> sin enviar el resumen. Si llegás a 3 días consecutivos, tu acceso se bloquea automáticamente.`);
+    else if(missed===2)showAlert('alertBannerRed','alertTextRed',`⚠️ Tenés <strong>2 días</strong> sin enviar el resumen. Si no enviás el de hoy, mañana se bloquea tu acceso.`);
   }
-
-  // Socios: recordatorio suave
-  if (user.role === 'socio' && missed >= 1)
-    showAlert('alertBannerYellow', 'alertTextYellow', `Recordatorio: tenés <strong>${missed} día${missed > 1 ? 's' : ''}</strong> sin enviar el resumen de actividad.`);
-
-  if (user.isNew)
-    showAlert('alertBannerYellow', 'alertTextYellow', `<strong>¡Bienvenido/a ${user.name}!</strong> Tu perfil fue dado de alta pero algunos aspectos de tu incorporación pueden no estar completamente configurados. Contactá a <strong>Santiago</strong> para confirmar tu lugar en el organigrama y flujos de trabajo.`);
+  if(user.role==='socio'&&missed>=1)showAlert('alertBannerYellow','alertTextYellow',`Recordatorio: tenés <strong>${missed} día${missed>1?'s':''}</strong> sin enviar el resumen de actividad.`);
+  if(user.isNew)showAlert('alertBannerYellow','alertTextYellow',`<strong>¡Bienvenido/a ${user.name}!</strong> Tu perfil fue dado de alta pero algunos aspectos pueden no estar completamente configurados. Contactá a <strong>Santiago</strong> para confirmar tu lugar en el organigrama.`);
 }
 
-function canShowSummaryAlert(role) { return !['socio', 'tercerizado'].includes(role); }
-
-function goToChat() {
-  if (!currentUser) return;
-  document.getElementById('welcomeTitle').textContent = `Hola ${currentUser.name}, ¿en qué te puedo ayudar hoy?`;
+function goToChat(){
+  if(!currentUser)return;
+  document.getElementById('welcomeTitle').textContent=`Hola ${currentUser.name}, ¿en qué te puedo ayudar hoy?`;
   showScreen('chatScreen');
 }
 
-// ─── UNLOCK ────────────────────────────────────────────────────────────────────
-function tryUnlock() {
-  const code = document.getElementById('unlockCodeInput').value.trim();
-  const email = localStorage.getItem('census_pending_unlock');
-  const errEl = document.getElementById('unlockError');
-  errEl.style.display = 'none';
-  if (!code || code.length !== 6) { showUnlockError('Ingresá el código de 6 dígitos.'); return; }
-  if (!email) { showUnlockError('Error: volvé a la pantalla de login.'); return; }
-  if (validateCode(email, code)) {
+function tryUnlock(){
+  const code=document.getElementById('unlockCodeInput').value.trim();
+  const email=localStorage.getItem('census_pending_unlock');
+  document.getElementById('unlockError').style.display='none';
+  if(!code||code.length!==6){showUnlockError('Ingresá el código de 6 dígitos.');return}
+  if(!email){showUnlockError('Error: volvé a la pantalla de login.');return}
+  if(validateCode(email,code)){
     consumeCode(email);
-    const storage = getStorage(email);
-    storage.lastSummaryDate = today();
-    setStorage(email, storage);
+    const storage=getStorage(email);
+    storage.lastSummaryDate=today();
+    setStorage(email,storage);
     localStorage.removeItem('census_pending_unlock');
-    const user = ALLOWED_USERS[email];
-    currentUser = { email, ...user, missed: 0, todayStr: today() };
-    enterApp(user, 0);
-  } else {
-    showUnlockError('Código incorrecto o expirado. Solicitá uno nuevo a tu supervisor.');
-  }
+    const user=ALLOWED_USERS[email];
+    currentUser={email,...user,missed:0,todayStr:today()};
+    enterApp(user,0);
+  }else{showUnlockError('Código incorrecto o expirado. Solicitá uno nuevo.')}
 }
 
-function showUnlockError(msg) { const el = document.getElementById('unlockError'); el.textContent = msg; el.style.display = 'block'; }
-
-// ─── ADMIN ─────────────────────────────────────────────────────────────────────
-function populateUnlockSelect() {
-  const select = document.getElementById('unlockTarget');
-  select.innerHTML = '<option value="">— Elegí un usuario —</option>';
-  Object.entries(ALLOWED_USERS).forEach(([email, user]) => {
-    if (!ADMIN_ROLES.includes(user.role) && !NO_BLOCK_ROLES.includes(user.role)) {
-      const opt = document.createElement('option');
-      opt.value = email;
-      opt.textContent = `${user.name} (${email})`;
+function populateUnlockSelect(){
+  const select=document.getElementById('unlockTarget');
+  select.innerHTML='<option value="">— Elegí un usuario —</option>';
+  Object.entries(ALLOWED_USERS).forEach(([email,user])=>{
+    if(!ADMIN_ROLES.includes(user.role)&&!NO_BLOCK_ROLES.includes(user.role)){
+      const opt=document.createElement('option');
+      opt.value=email;opt.textContent=`${user.name} (${email})`;
       select.appendChild(opt);
     }
   });
 }
 
-function generateCode() {
-  const email = document.getElementById('unlockTarget').value;
-  if (!email) { alert('Elegí un usuario primero.'); return; }
-  const code = generateRandom6();
-  saveCode(email, code);
-  const user = ALLOWED_USERS[email];
-  document.getElementById('codeFor').textContent = `Para: ${user.name} (${email})`;
-  document.getElementById('bigCode').textContent = code;
-  document.getElementById('bigCode').style.opacity = '1';
-  document.getElementById('codeDisplay').style.display = 'block';
-  if (countdownInterval) clearInterval(countdownInterval);
-  const expiresAt = Date.now() + CODE_DURATION_MS;
-  function tick() {
-    const remaining = Math.max(0, expiresAt - Date.now());
-    const mins = Math.floor(remaining / 60000);
-    const secs = Math.floor((remaining % 60000) / 1000);
-    document.getElementById('countdown').textContent =
-      remaining > 0 ? `Expira en ${mins}:${secs.toString().padStart(2, '0')}` : 'Código expirado';
-    if (remaining === 0) { clearInterval(countdownInterval); document.getElementById('bigCode').style.opacity = '0.3'; }
+function generateCode(){
+  const email=document.getElementById('unlockTarget').value;
+  if(!email){alert('Elegí un usuario primero.');return}
+  const code=generateRandom6();
+  saveCode(email,code);
+  const user=ALLOWED_USERS[email];
+  document.getElementById('codeFor').textContent=`Para: ${user.name} (${email})`;
+  document.getElementById('bigCode').textContent=code;
+  document.getElementById('bigCode').style.opacity='1';
+  document.getElementById('codeDisplay').style.display='block';
+  if(countdownInterval)clearInterval(countdownInterval);
+  const expiresAt=Date.now()+CODE_DURATION_MS;
+  function tick(){
+    const remaining=Math.max(0,expiresAt-Date.now());
+    const mins=Math.floor(remaining/60000);
+    const secs=Math.floor((remaining%60000)/1000);
+    document.getElementById('countdown').textContent=remaining>0?`Expira en ${mins}:${secs.toString().padStart(2,'0')}`:'Código expirado';
+    if(remaining===0){clearInterval(countdownInterval);document.getElementById('bigCode').style.opacity='0.3'}
   }
-  tick();
-  countdownInterval = setInterval(tick, 1000);
+  tick();countdownInterval=setInterval(tick,1000);
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
-function showLoginError(msg) { const el = document.getElementById('loginError'); el.textContent = msg; el.style.display = 'block'; }
-function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-function showAlert(bid, tid, msg) { document.getElementById(tid).innerHTML = msg; document.getElementById(bid).classList.add('show'); }
-function dismissAlert(bid) { document.getElementById(bid).classList.remove('show'); }
+function showLoginError(msg){const el=document.getElementById('loginError');el.textContent=msg;el.style.display='block'}
+function showUnlockError(msg){const el=document.getElementById('unlockError');el.textContent=msg;el.style.display='block'}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function showAlert(bid,tid,msg){document.getElementById(tid).innerHTML=msg;document.getElementById(bid).classList.add('show')}
+function dismissAlert(bid){document.getElementById(bid).classList.remove('show')}
 
-// ─── SYSTEM PROMPT ─────────────────────────────────────────────────────────────
-function buildSystemPrompt(user) {
-  const newNote = user.isNew ? `\nNOTA: ${user.name} es un ingreso reciente cuyo perfil puede no estar completamente configurado. Si pregunta sobre su rol o a quién reporta, indicale que coordine con Santiago.\n` : '';
-  const roleNote = user.role === 'socio'
-    ? `\nEstás hablando con uno de los socios del estudio. Respondé con total detalle técnico y sin restricciones de escalamiento.\n`
-    : user.role === 'tercerizado'
-    ? `\nEstás hablando con un contador tercerizado. Interactúa directamente con Matías, Joaquín y Santiago. No tiene equipo a cargo ni reporta a supervisores intermedios.\n`
-    : '';
+// ─── FILE HANDLING ────────────────────────────────────────────────────────────
+function handleFileSelect(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const maxSize=5*1024*1024;
+  if(file.size>maxSize){alert('El archivo es muy grande. Máximo 5MB.');return}
+  attachedFile=file;
+  document.getElementById('fileName').textContent=file.name;
+  document.getElementById('filePreview').classList.add('show');
+  const reader=new FileReader();
+  reader.onload=e=>{attachedFileData=e.target.result.split(',')[1]};
+  reader.readAsDataURL(file);
+}
 
-  return `Sos el asistente operativo de Census, un estudio contable en Montevideo con espíritu innovador y valores tradicionales.
+function removeFile(){
+  attachedFile=null;attachedFileData=null;
+  document.getElementById('fileInput').value='';
+  document.getElementById('filePreview').classList.remove('show');
+}
 
-Estás hablando con ${user.name} (${user.email}). Su rol es: ${user.role}. ${user.supervisor ? `Su supervisor directo es: ${user.supervisor}.` : ''}
+// ─── SYSTEM PROMPT ────────────────────────────────────────────────────────────
+function buildSystemPrompt(user){
+  const newNote=user.isNew?`\nNOTA: ${user.name} es un ingreso reciente cuyo perfil puede no estar completamente configurado. Si pregunta sobre su rol o a quién reporta, indicale que coordine con Santiago.\n`:'';
+  const roleNote=user.role==='socio'?`\nEstás hablando con uno de los socios del estudio. Respondé con total detalle técnico y sin restricciones de escalamiento.\n`:user.role==='tercerizado'?`\nEstás hablando con un contador tercerizado. Interactúa directamente con Matías, Joaquín y Santiago.\n`:'';
+  return `Sos Néstor, el asistente operativo interno de Census, un estudio contable en Montevideo con espíritu innovador y valores tradicionales. Te llamas Néstor y así te presentás cuando te preguntan tu nombre.
+
+Estás hablando con ${user.name} (${user.email}). Su rol es: ${user.role}. ${user.supervisor?`Su supervisor directo es: ${user.supervisor}.`:''}
 ${newNote}${roleNote}
-Ajustá tus respuestas según el rol:
-- Auxiliar junior (Antonela o Federica): su primer escalamiento es al supervisor directo antes de ir a Matías.
-- Auxiliar senior (Valentino o Patricia): fomentá la autonomía. Escalar a Matías, no a los socios.
-- Matías: respondé con detalle técnico cuando corresponda.
-- Socios (Santiago o Joaquín): sin restricciones, total detalle.
-- Tercerizados: interactúan con Matías, Joaquín y Santiago directamente.
+
+IDENTIDAD Y TONO
+Respondés como un consultor senior interno del estudio. Tono directo, técnico, sin relleno. Hablás de vos (rioplatense). No subestimés al auxiliar, pero tampoco asumas que conocen el detalle normativo. Cuando algo es importante o puede tener consecuencias si se hace mal, marcalo claramente. Si la pregunta es ambigua, hacé una sola pregunta de clarificación antes de responder. Nunca des respuestas genéricas — siempre ancladas al sistema uruguayo.
+
+CÓMO RESPONDER
+- Si la consulta tiene una sola respuesta clara: respondé directo.
+- Si hay opciones: presentá alternativas con implicancias concretas y decí cuál recomendás y por qué.
+- Citá artículos, decretos o resoluciones cuando sean relevantes.
+- Si algo puede haber cambiado recientemente, avisalo y remití a impo.com.uy o dgi.gub.uy antes de aplicar.
+- No das "consultá a un profesional" — el escalamiento es interno.
+- Nunca des introducciones ni cierres vacíos. Nunca expliques conceptos básicos que cualquier auxiliar contable conoce.
+
+NORMATIVA — INSTRUCCIÓN CRÍTICA
+Antes de citar cualquier norma, verificá que esté vigente. El Texto Ordenado vigente es el TO 2023 (Dec. 101/024, del 4/4/2024) — nunca cites "TO 1996" salvo consulta histórica expresa. Ante duda de vigencia, indicalo y remití a impo.com.uy o dgi.gub.uy.
+Jerarquía: Constitución → Ley → Decreto → Resolución administrativa → Consulta vinculante.
+
+CONSULTAS DE ALTA COMPLEJIDAD
+Cuando una consulta implique criterio técnico de peso, normativa ambigua, casos con múltiples variables, o consecuencias fiscales/legales importantes: dar la mejor respuesta posible con los inputs disponibles, pero siempre cerrar recomendando validar con:
+- Consultas técnicas generales → Matías
+- Criterio profesional de peso sobre clientes → Matías, luego Santiago o Joaquín si corresponde
+- COMAP, estructuras societarias complejas, tributación internacional → Santiago o Joaquín directamente
+
+CRITERIO Y AUTONOMÍA
+Cuando un auxiliar consulta qué opción tomar ante una situación concreta:
+1. Preguntar qué opciones ve y cuál elegiría, y por qué.
+2. Si el razonamiento es correcto, confirmarlo y reforzarlo.
+3. Si es incorrecto, explicar por qué y orientar sin dar la respuesta directa.
+4. Fomentar autonomía siempre — especialmente con auxiliares senior (Valentino y Patricia), quienes deben resolver y responder mails a clientes sin escalar internamente. Si Patricia o Valentino traen una consulta que podrían resolver solos, orientarlos a hacerlo.
+5. Solo derivar a Matías si genuinamente supera la capacidad del auxiliar.
 
 EL EQUIPO
-- Auxiliares junior: Antonela (arucci@censusuy.com), Federica (ftorres@censusuy.com) — mail únicamente.
-- Auxiliares senior: Valentino (vbertinat@censusuy.com), Patricia (prodriguez@censusuy.com) — WhatsApp residual.
-- Encargado: Matías Morales (mmorales@censusuy.com).
+- Auxiliares junior: Antonela (arucci@censusuy.com), Federica (ftorres@censusuy.com) — canal mail únicamente, no comparten número personal.
+- Auxiliares senior: Valentino (vbertinat@censusuy.com), Patricia (prodriguez@censusuy.com) — WhatsApp empresarial, uso residual.
+- Encargado general: Matías Morales (mmorales@censusuy.com).
 - Socios: Santiago Fernández (sfernandez@censusuy.com), Joaquín Silvera (jsilvera@censusuy.com).
-- Tercerizados: N. González (ngonzalez@censusuy.com), N. Moure (nmoure@censusuy.com).
+- Tercerizados: N. González (ngonzalez@censusuy.com), N. Moure (nmoure@censusuy.com) — interactúan con Matías, Joaquín y Santiago.
+- Canal preferido siempre: mail. WhatsApp es residual.
 
-Canal preferido siempre: mail. WhatsApp es residual.
-Escalamiento clientes: Antonela→Valentino→Matías→Socios / Federica→Patricia→Matías→Socios.
-Escalamiento general: entre pares→supervisor cruzado→Matías. No llegan a socios.
+ESCALAMIENTO
+Consultas sobre clientes específicos: Antonela→Valentino→Matías→Socios / Federica→Patricia→Matías→Socios.
+Consultas generales: entre pares→supervisor (cruzado)→Matías. No llegan a socios.
+Cuando derives, explicá por qué y qué información debe llevar quien escala.
 
 CULTURA AUTODIDACTA
-Antes de consultar: 1) instructivos oficiales, 2) llamar al organismo, 3) CADE (cade.com.uy), 4) ConsultaX (consultax.com.uy), 5) escalar.
+Antes de consultar a un superior:
+1. Instructivos oficiales del organismo (DGI, BPS, MTSS, etc.)
+2. Llamar directamente al organismo
+3. CADE (software local en cada PC) — cade.com.uy. Tiene normativa, laudos, decretos, resoluciones, consultas vinculantes.
+4. ConsultaX — consultax.com.uy
+5. Solo si ninguna resuelve, escalar
 
-TRÁMITES
-Identificar organismo: MTOP (transporte), FOCER (construcción/cesantía), DGI (impuestos), BPS (seguridad social), MTSS (trabajo), migracion.minterior.gub.uy, etc. Solo sitios oficiales. Leer trámite completo antes de iniciar. Seguimiento hasta completar. Notariales: Matías→Joaquín→Santiago. Escribanas: Eugenia Gómez Ipar y Gianella Guarino.
+El mail al organismo (dacontri@dgi.gub.uy, csgrupoXX@mtss.gub.uy, etc.) es el ÚLTIMO recurso — cuando se agotaron las opciones de autogestión, no hay seguridad suficiente o el tiempo no alcanza. No es un atajo.
 
-CODIFICADOR BPS: Versión 34 (09/02/2026). Verificar siempre la más reciente en bps.gub.uy.
+HERRAMIENTAS DE CONSULTA NORMATIVA
+- CADE: primera opción. Incluye consejos de salarios, laudos y normativa laboral.
+- ConsultaX (consultax.com.uy): complemento online.
+- DGI (dgi.gub.uy): valores actuales e históricos, calendario de vencimientos, normativa.
+- BPS (bps.gub.uy): aportes mínimos, codificador, valores actuales e históricos.
+- impo.com.uy: normativa consolidada y vigente.
+- Llamada al organismo: para respuesta rápida.
+- Mail a DGI: dacontri@dgi.gub.uy (mínimo 24hs hábiles de respuesta — NO usar si es urgente).
+- Mails MTSS consejos de salarios: csgrupoXX@mtss.gub.uy (XX = número de grupo, indicar subgrupo en el asunto).
+- STeP: dudas por WhatsApp con el grupo de STeP. Capacitaciones: https://drive.google.com/drive/folders/1X89q4gzIwT-eWmNvTR9tYWSKPJwUlWyb
 
-SEGUIMIENTO: Cada 2-3 días hasta completarse. Responsable: quien lo inició.
+BÚSQUEDA DE VALORES — PROCEDIMIENTO
+Para valores de BPS (BFC, BPC, aportes mínimos, fictos): buscar siempre en bps.gub.uy → Recursos → Herramientas → Valores actuales o Valores históricos.
+Para valores de DGI (ICOSA, anticipos IRAE, calendarios): buscar siempre en dgi.gub.uy o gub.uy/dgi.
+Valores vigentes 2026 ya conocidos:
+- BFC: $1.847,96 | BPC: $6.864 | Salario mínimo: $24.572
+- ICOSA anticipo mensual 2026: $2.322 | ICOSA al cierre 2026: $27.866 | Constitución SA 2026: $55.732
+- Unipersonal sin dependientes categoría 1ª (11 BFC = $20.328): sin FONASA $4.594 / con FONASA sin hijos sin cónyuge $8.833 / con FONASA con hijos sin cónyuge $9.502
+- Vencimientos 2026: CEDE abril día 22 / NO CEDE abril día 27
+- Para anticipos de IRAE mínimos según fecha de cierre y facturación: buscar en dgi.gub.uy antes de responder.
 
-PLAZOS BPS: Altas mismo día sin excepción (planilla MTSS puede esperar, el alta NO). Bajas: 5 días hábiles.
+FACTURACIÓN DE BPS — EMPRESAS AUTOGESTIONADAS
+Para empresas sin personal (autogestionadas), la factura de BPS es válida y se puede dar OK si los únicos conceptos son:
+- Código 1: Aporte jubilatorio no dependiente
+- Código 7: Seguro de enfermedad no dep. (solo si tiene FONASA)
+- Código 48: FRL No Dep. Ap. Pers.
+- Código 107: Aporte adicional SNIS No Dep. (solo si tiene FONASA)
+- Timbres: único concepto adicional aceptable
+Si aparece cualquier otro concepto (multas, reintegros mutuales, etc.): NO validar y derivar al supervisor.
+Las unipersonales de servicios personales pagan jubilatorio y FONASA en facturas separadas. Las contribuyentes de IRAE (ej. SAS) las pagan en un único documento. Verificar siempre el tipo de contribuyente en el Codificador BPS (versión más reciente en bps.gub.uy).
 
-PLAZOS CLIENTES: Liquidaciones, salarios, egresos, licencias: 48 horas hábiles.
+REINTEGROS MUTUALES — UNIPERSONALES
+Los titulares de unipersonales tienen cobertura FONASA mientras tengan hasta 5 dependientes. Si superan ese número, pierden la cobertura. Responsabilidad de Census: comunicar el cambio de SS en BPS antes del día 10 de cada mes. Si no se hace, BPS paga la capita y luego la cobra como reintegro mutual — y esa factura le corresponde al estudio. Monitorear activamente en clientes unipersonales que puedan estar cerca del límite.
+
+DECLARACIONES JURADAS Y TIMBRES
+- Presentación de DJs: se envían todas por WhatsApp a Red Pagos al 096 466 177.
+- Pago de timbres: lo realizan exclusivamente Santiago o Joaquín.
+
+COTIZACIONES DE MONEDA EXTRANJERA
+Siempre se toman del BCU (bcu.gub.uy) con fecha del día hábil anterior a la fecha de la operación. Se usa dólar billete. Ejemplo: operación del 30/03/2026 → cotización del 27/03/2026.
+
+GESTIÓN DE ARCHIVOS
+Ruta de guardado: Datos → Clientes → [Nombre del cliente] → [Categoría: Laboral / Fiscal / Societario / Proyecto de inversión].
+Nombre del archivo: Asunto mm.aaaa - Cliente. Ejemplo: DGI 02.2026 - Santiago Fernández.
 
 PLAN IN Y STEP
-Plan In (uy.plan-in.net): CRM. Toda tarea cargada. Recurrentes: ya cargadas. Nuevas: ticket con vencimiento. Tiempo al cliente real, no a "Census". Soporte: soporte@plan-in.net.
-STeP: contabilización y liquidación. Dudas: WhatsApp con STeP. Capacitaciones: https://drive.google.com/drive/folders/1X89q4gzIwT-eWmNvTR9tYWSKPJwUlWyb. Plan In migrará a STeP próximamente.
+Plan In (uy.plan-in.net): CRM del estudio. Toda tarea debe estar cargada. Recurrentes: ya cargadas. Nuevas: ticket con vencimiento siempre. Cargar tiempo al cliente real, no a "Census" (residual). Soporte: soporte@plan-in.net.
+STeP: software de contabilización y liquidación de impuestos. Plan In migrará a STeP próximamente — se actualizará cuando ocurra.
+Para dudas de Plan In: soporte@plan-in.net. Para dudas de STeP: grupo de WhatsApp con STeP.
 
-MAILS: Ningún mail sin respuesta. Si no se resuelve en el día: confirmar recepción + cargar en Plan In. Responder todos los ítems en un único correo. Al revisar un mail: pedir siempre el mail original.
+GESTIÓN DE MAILS
+Ningún mail sin respuesta. Si no se puede resolver en el día: confirmar recepción + cargar tarea en Plan In con vencimiento correcto.
+Antes de responder un mail: leer completo e identificar TODOS los puntos. Responder siempre en un único correo cubriendo todos los ítems. Si falta algún punto, aclarar en el mismo mail.
+Al revisar un mail de un auxiliar: pedir siempre el mail original que está respondiendo para verificar que se contestan todos los puntos.
+Organizar el mail en carpetas por cliente.
 
-AUSENCIAS Y HORARIOS: Licencias, días de estudio, llegadas tarde, médicos: consultar con Matías. No contactar socios directamente.
+PLAZOS Y VENCIMIENTOS
+- Altas BPS: mismo día, sin excepción. Planilla MTSS puede esperar, el alta NO.
+- Bajas BPS: 5 días hábiles.
+- Liquidaciones, salarios, egresos, licencias: 48 horas hábiles de plazo a clientes.
+- Seguimiento de trámites enviados a clientes: cada 2-3 días hasta completarse.
+- UDT en BPS: cargar a la brevedad tras validar con el cliente — impacta en el subsidio del empleado.
 
-REMUNERACIÓN: Sueldos/pagos/recibos: directamente con Joaquín. Aumentos/cambios de carga/horario: primero Matías, luego escala a Santiago y Joaquín.
+SOPORTE TÉCNICO
+Antes de llamar a Hacha (James Forrester — 099 204 038):
+1. Intentar resolver solo con los pasos básicos del problema.
+2. Buscar en Google el error exacto o un tutorial.
+3. Si no resuelve, contactar a Hacha con el detalle de qué equipo es, qué pasó y qué intentaste.
 
-COMUNICACIÓN PROACTIVA: Avisar ante dudas, vencimientos en riesgo o tareas que no se entienden. El silencio no es válido.
+AUSENCIAS Y HORARIOS
+Licencias, días de estudio, llegadas tarde, médicos: consultar con Matías. No contactar socios directamente.
+Aumentos, cambios de carga horaria o de horario: primero Matías, luego él escala a Santiago y Joaquín.
+Sueldos, pagos, firma de recibos: directamente con Joaquín.
 
-CRITERIO Y AUTONOMÍA: Ante "qué hago": preguntar qué opciones ve y cuál elegiría. Confirmar si es correcto, corregir si no. Fomentar autonomía. Solo derivar a Matías si genuinamente supera al auxiliar.
+COMUNICACIÓN PROACTIVA
+Avisar ante dudas, vencimientos en riesgo o tareas que no se entienden. El silencio no es válido. Si hay muchas urgencias superpuestas: consultar al supervisor y escalar según corresponda.
 
-TRABAJO DE ENRIQUE (EX COLABORADOR): Todo lo realizado por Enrique debe reconfirmarse antes de darlo por bueno. Consultar a Matías.
+PROCEDIMIENTOS DE PERSONAL
 
-LO QUE NO PODÉS RESOLVER SOLO: Decisiones sobre clientes con criterio profesional de peso, normativa ambigua con consecuencias importantes, cualquier cosa que requiera criterio de los socios. Ante duda: validar con Matías primero.
+ALTA DE EMPLEADO:
+Documentación a solicitar: contrato de trabajo firmado, formulario SNIS (situación familiar para FONASA), formulario 3100 de DGI (deducciones IRPF).
+1. Alta en BPS el mismo día — sin excepción.
+2. Planilla de trabajo y planilla MTSS: si es posible en el día, sino pendiente a la brevedad.
+3. Cargar persona y contrato en GNS Software con las condiciones exactas indicadas por el cliente. Error en horas de contrato (ej. 6 en lugar de 8) impacta en cálculos de hora extra, falta, descanso. Verificar dos veces.
 
-TONO: Directo, claro, profesional pero cercano. Sin tecnicismos innecesarios. Pasos numerados para procedimientos. Si no sabés algo con certeza, decilo.`;
+UDT (ÚLTIMO DÍA TRABAJADO):
+Surge cuando un empleado se certifica por enfermedad y BPS notifica que hay un UDT pendiente.
+1. Validar con el cliente cuál fue el último día que el empleado trabajó antes de enfermarse.
+2. Cargar el UDT en BPS con usuario y clave de la empresa.
+No cargar con información supuesta — impacta en el cobro del subsidio.
+
+LICENCIA POR MATERNIDAD:
+1. El ginecólogo ingresa la solicitud inicial en BPS.
+2. La empresa confirma en BPS con usuario y clave.
+
+MEDIO HORARIO MATERNAL:
+1. La madre ingresa la solicitud desde su usuario personal en BPS.
+2. La empresa confirma en BPS con usuario y clave.
+
+ACCIDENTE LABORAL — DENUNCIA EN BSE:
+Solicitar al cliente antes de cargar:
+- Nombre, domicilio y teléfono del empleado.
+- Fecha, hora y dirección donde ocurrió el accidente.
+- Detalle de cómo ocurrió y lesiones producidas.
+- Partes del cuerpo lesionadas y lado afectado.
+- ¿Continuó trabajando en días posteriores? Fecha y hora del último día trabajado.
+- Horario del día del accidente (entrada y salida).
+- Nombre y teléfono del encargado de vigilar los trabajos.
+- Testigos (máximo 2): nombre, apellido, teléfono y domicilio.
+No ingresar la denuncia con información incompleta o supuesta.
+
+ADELANTOS SALARIALES:
+- Sueldo y aguinaldo: se pueden adelantar, reteniéndose en el recibo correspondiente.
+- Salario vacacional: NO se puede adelantar — debe abonarse previo a la licencia.
+- Única excepción: se puede descontar un adelanto de salario vacacional en caso de egreso del empleado.
+
+TRABAJO DE ENRIQUE (EX COLABORADOR)
+Todo lo realizado por Enrique debe reconfirmarse antes de darlo por bueno, sin excepción. Consultar a Matías si hay dudas.
+
+LO QUE NO PODÉS RESOLVER SOLO
+- Decisiones sobre clientes con criterio profesional de peso.
+- Consultas que requieran información del cliente no compartida.
+- Normativa ambigua con consecuencias importantes.
+- Cualquier cosa que requiera criterio de los socios.
+- Ante cualquier duda sobre cómo responder: validar con Matías primero.`;
 }
 
 // ─── CHAT ──────────────────────────────────────────────────────────────────────
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
-function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
-function quickSend(text) { document.getElementById('input').value = text; sendMessage(); }
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}}
+function quickSend(text){document.getElementById('input').value=text;sendMessage()}
 
-function addMessage(role, content) {
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.remove();
-  const messages = document.getElementById('messages');
-  const div = document.createElement('div'); div.className = `message ${role}`;
-  const avatar = document.createElement('div'); avatar.className = `avatar ${role}`;
-  avatar.textContent = role === 'bot' ? 'C' : (currentUser ? currentUser.name.substring(0, 3) : 'Vos');
-  const bubble = document.createElement('div'); bubble.className = 'bubble';
-  bubble.innerHTML = formatMessage(content);
-  div.appendChild(avatar); div.appendChild(bubble);
-  messages.appendChild(div); messages.scrollTop = messages.scrollHeight;
+function addMessage(role,content){
+  const welcome=document.getElementById('welcome');if(welcome)welcome.remove();
+  const messages=document.getElementById('messages');
+  const div=document.createElement('div');div.className=`message ${role}`;
+  const avatar=document.createElement('div');avatar.className=`avatar ${role}`;
+  avatar.textContent=role==='bot'?'N':(currentUser?currentUser.name.substring(0,3):'Vos');
+  const bubble=document.createElement('div');bubble.className='bubble';
+  bubble.innerHTML=formatMessage(content);
+  div.appendChild(avatar);div.appendChild(bubble);
+  messages.appendChild(div);messages.scrollTop=messages.scrollHeight;
 }
 
-function formatMessage(text) {
+function formatMessage(text){
   return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/^#{1,3} (.*?)$/gm, '<strong>$1</strong>')
-    .replace(/^\d+\. (.*?)$/gm, '<li>$1</li>')
-    .replace(/^[-•] (.*?)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>')
-    .replace(/^(?!<)(.+)$/gm, '<p>$1</p>')
-    .replace(/<p><\/p>/g, '');
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^#{1,3} (.*?)$/gm,'<strong>$1</strong>')
+    .replace(/^\d+\. (.*?)$/gm,'<li>$1</li>')
+    .replace(/^[-•] (.*?)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g,m=>`<ul>${m}</ul>`)
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/\n/g,'<br>')
+    .replace(/^(?!<)(.+)$/gm,'<p>$1</p>')
+    .replace(/<p><\/p>/g,'');
 }
 
-function showTyping() {
-  const messages = document.getElementById('messages');
-  const div = document.createElement('div'); div.className = 'typing'; div.id = 'typing';
-  const avatar = document.createElement('div'); avatar.className = 'avatar bot'; avatar.textContent = 'C';
-  const dots = document.createElement('div'); dots.className = 'typing-dots';
-  dots.innerHTML = '<span></span><span></span><span></span>';
-  div.appendChild(avatar); div.appendChild(dots);
-  messages.appendChild(div); messages.scrollTop = messages.scrollHeight;
+function showTyping(){
+  const messages=document.getElementById('messages');
+  const div=document.createElement('div');div.className='typing';div.id='typing';
+  const avatar=document.createElement('div');avatar.className='avatar bot';avatar.textContent='N';
+  const dots=document.createElement('div');dots.className='typing-dots';
+  dots.innerHTML='<span></span><span></span><span></span>';
+  div.appendChild(avatar);div.appendChild(dots);
+  messages.appendChild(div);messages.scrollTop=messages.scrollHeight;
 }
-function hideTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+function hideTyping(){const t=document.getElementById('typing');if(t)t.remove()}
 
-async function sendMessage() {
-  const input = document.getElementById('input');
-  const text = input.value.trim();
-  if (!text || isLoading) return;
-  isLoading = true; document.getElementById('sendBtn').disabled = true;
-  input.value = ''; input.style.height = 'auto';
-  addMessage('user', text);
-  history.push({ role: 'user', content: text });
-  showTyping();
-  try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: buildSystemPrompt(currentUser),
-        messages: history
-      })
-    });
-    const data = await response.json();
-    hideTyping();
-    const reply = data.content?.[0]?.text || 'No pude procesar tu consulta. Intentá de nuevo.';
-    history.push({ role: 'assistant', content: reply });
-    addMessage('bot', reply);
-  } catch (err) {
-    hideTyping();
-    addMessage('bot', 'Hubo un problema de conexión. Por favor intentá de nuevo.');
+async function sendMessage(){
+  const input=document.getElementById('input');
+  const text=input.value.trim();
+  if((!text&&!attachedFile)||isLoading)return;
+  isLoading=true;document.getElementById('sendBtn').disabled=true;
+  const messageText=text||(attachedFile?`[Archivo adjunto: ${attachedFile.name}]`:'');
+  input.value='';input.style.height='auto';
+  addMessage('user',messageText);
+
+  // Build message content
+  let userContent;
+  if(attachedFile&&attachedFileData){
+    const mediaType=attachedFile.type||'application/octet-stream';
+    const isImage=attachedFile.type.startsWith('image/');
+    const isPdf=attachedFile.type==='application/pdf';
+    if(isImage){
+      userContent=[{type:'image',source:{type:'base64',media_type:mediaType,data:attachedFileData}},{type:'text',text:text||'Analizá este documento.'}];
+    } else if(isPdf){
+      userContent=[{type:'document',source:{type:'base64',media_type:'application/pdf',data:attachedFileData}},{type:'text',text:text||'Analizá este documento.'}];
+    } else {
+      userContent=text;
+    }
+    removeFile();
+  } else {
+    userContent=text;
   }
-  isLoading = false; document.getElementById('sendBtn').disabled = false; input.focus();
+
+  history.push({role:'user',content:userContent});
+  showTyping();
+  try{
+    const response=await fetch(API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:buildSystemPrompt(currentUser),messages:history})
+    });
+    const data=await response.json();
+    hideTyping();
+    const reply=data.content?.[0]?.text||'No pude procesar tu consulta. Intentá de nuevo.';
+    history.push({role:'assistant',content:reply});
+    addMessage('bot',reply);
+  }catch(err){
+    hideTyping();
+    addMessage('bot','Hubo un problema de conexión. Por favor intentá de nuevo.');
+  }
+  isLoading=false;document.getElementById('sendBtn').disabled=false;input.focus();
 }
 
 // ─── RESUMEN ───────────────────────────────────────────────────────────────────
-function sendSummary() {
-  if (history.length === 0) { alert('No hay conversación para resumir todavía.'); return; }
-  const dateStr = new Date().toLocaleDateString('es-UY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  let body = `Resumen de actividad — Asistente Operativo Census\nUsuario: ${currentUser.name} (${currentUser.email})\nFecha: ${dateStr}\n─────────────────────────────────────\n\n`;
-  history.forEach(msg => { body += `[${msg.role === 'user' ? currentUser.name : 'Asistente'}]\n${msg.content}\n\n`; });
-  const subject = `Resumen Asistente Census — ${currentUser.name} — ${new Date().toLocaleDateString('es-UY')}`;
-  window.location.href = `mailto:${SUMMARY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  const storage = getStorage(currentUser.email);
-  storage.lastSummaryDate = today();
-  setStorage(currentUser.email, storage);
-  dismissAlert('alertBannerRed');
+async function sendSummary(){
+  if(history.length===0){alert('No hay conversación para resumir todavía.');return}
+  const dateStr=new Date().toLocaleDateString('es-UY',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const conversation=history.map(msg=>({role:msg.role==='user'?currentUser.name:'Néstor',content:typeof msg.content==='string'?msg.content:'[Contenido con archivo adjunto]'}));
+  try{
+    const response=await fetch(SUMMARY_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({userName:currentUser.name,userEmail:currentUser.email,date:dateStr,conversation})
+    });
+    if(response.ok){
+      const storage=getStorage(currentUser.email);
+      storage.lastSummaryDate=today();
+      setStorage(currentUser.email,storage);
+      dismissAlert('alertBannerRed');
+      addMessage('bot','✅ Resumen del día enviado correctamente a contacto@censusuy.com.');
+    } else {
+      throw new Error('Error en el servidor');
+    }
+  }catch(err){
+    // Fallback a mailto
+    let body=`Resumen de actividad — Néstor · Asistente Operativo Census\nUsuario: ${currentUser.name} (${currentUser.email})\nFecha: ${dateStr}\n─────────────────────────────────────\n\n`;
+    history.forEach(msg=>{const label=msg.role==='user'?currentUser.name:'Néstor';const content=typeof msg.content==='string'?msg.content:'[Contenido con archivo adjunto]';body+=`[${label}]\n${content}\n\n`});
+    const subject=`Resumen Néstor — ${currentUser.name} — ${new Date().toLocaleDateString('es-UY')}`;
+    window.location.href=`mailto:${SUMMARY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const storage=getStorage(currentUser.email);
+    storage.lastSummaryDate=today();
+    setStorage(currentUser.email,storage);
+    dismissAlert('alertBannerRed');
+  }
 }
 </script>
 </body>
