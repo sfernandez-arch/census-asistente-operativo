@@ -132,7 +132,55 @@
   ::-webkit-scrollbar{width:3px}
   ::-webkit-scrollbar-track{background:transparent}
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-  @media(max-width:600px){header{padding:0 16px}.bubble{max-width:88%}}
+  /* Nav tabs */
+  .nav-tabs{display:none;background:#000;border-bottom:1px solid var(--border);padding:0 32px}
+  .nav-tabs.show{display:flex}
+  .nav-tab{padding:12px 20px;font-family:'Work Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s}
+  .nav-tab:hover{color:var(--text-muted)}
+  .nav-tab.active{color:var(--red);border-bottom-color:var(--red)}
+
+  /* Calendar panel */
+  #salaScreen{flex-direction:column;align-items:center;padding:24px 20px}
+  .sala-container{width:100%;max-width:900px;animation:fadeUp 0.5s ease both}
+  .sala-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+  .sala-title{font-family:'Work Sans',sans-serif;font-size:20px;font-weight:600}
+  .sala-week-nav{display:flex;align-items:center;gap:12px}
+  .week-btn{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:8px 12px;color:var(--text-muted);cursor:pointer;font-size:13px;transition:all 0.2s}
+  .week-btn:hover{border-color:var(--red);color:var(--text)}
+  .week-label{font-size:13px;color:var(--text-muted);font-weight:400;min-width:180px;text-align:center}
+  .sala-grid{display:grid;grid-template-columns:60px repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+  .sala-grid-header{background:var(--surface);padding:10px 6px;text-align:center;font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+  .sala-grid-header.today-col{color:var(--red);background:var(--red-glow)}
+  .sala-time{background:var(--surface);padding:8px 6px;text-align:center;font-size:11px;color:var(--text-dim);font-weight:400;display:flex;align-items:center;justify-content:center}
+  .sala-slot{background:var(--bg);padding:6px;min-height:48px;cursor:pointer;transition:all 0.15s;position:relative}
+  .sala-slot:hover{background:var(--surface2)}
+  .sala-slot.today-col{background:rgba(185,29,33,0.03)}
+  .sala-slot.today-col:hover{background:rgba(185,29,33,0.08)}
+  .sala-reservation{background:var(--red-glow);border-left:3px solid var(--red);border-radius:2px;padding:4px 8px;font-size:11px;color:var(--text-muted);line-height:1.4;cursor:pointer;transition:all 0.2s}
+  .sala-reservation:hover{background:rgba(185,29,33,0.25)}
+  .sala-reservation .res-title{font-weight:600;color:var(--text);font-size:11px}
+  .sala-reservation .res-who{font-size:10px;color:var(--text-dim)}
+
+  /* Reservation modal */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;padding:20px}
+  .modal-overlay.show{display:flex}
+  .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:3px;width:100%;max-width:420px;padding:28px;animation:fadeUp 0.3s ease both}
+  .modal-box h3{font-family:'Work Sans',sans-serif;font-size:18px;font-weight:600;margin-bottom:4px}
+  .modal-date{font-size:13px;color:var(--text-muted);margin-bottom:20px}
+  .modal-box .field-label{margin-top:12px}
+  .modal-actions{display:flex;gap:10px;margin-top:20px}
+  .modal-actions .btn-primary{flex:1;margin-bottom:0}
+  .btn-cancel{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:14px;font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+  .btn-cancel:hover{border-color:var(--red);color:var(--text)}
+  .btn-delete{background:transparent;border:1px solid #ff4444;border-radius:3px;padding:10px 14px;font-family:'Work Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#ff4444;cursor:pointer;transition:all 0.2s;margin-top:12px;width:100%}
+  .btn-delete:hover{background:rgba(255,68,68,0.1)}
+  .sala-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+  .sala-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim)}
+  .sala-legend-dot{width:10px;height:10px;border-radius:2px}
+  .sala-legend-dot.free{background:var(--bg);border:1px solid var(--border)}
+  .sala-legend-dot.busy{background:var(--red-glow);border-left:3px solid var(--red)}
+
+  @media(max-width:600px){header{padding:0 16px}.bubble{max-width:88%}.nav-tabs{padding:0 16px}.sala-grid{grid-template-columns:50px repeat(5,1fr)}.sala-header{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -225,6 +273,50 @@
       </div>
     </div>
     <button class="btn-chat" onclick="goToChat()">→ Ir al chat con Néstor</button>
+  </div>
+</div>
+
+<nav class="nav-tabs" id="navTabs">
+  <div class="nav-tab active" onclick="switchTab('chat')">Chat</div>
+  <div class="nav-tab" onclick="switchTab('sala')">Sala de reuniones</div>
+</nav>
+
+<div class="screen" id="salaScreen">
+  <div class="sala-container">
+    <div class="sala-header">
+      <div class="sala-title">Sala de reuniones</div>
+      <div class="sala-week-nav">
+        <button class="week-btn" onclick="changeWeek(-1)">&larr; Anterior</button>
+        <span class="week-label" id="weekLabel"></span>
+        <button class="week-btn" onclick="changeWeek(1)">Siguiente &rarr;</button>
+      </div>
+    </div>
+    <div class="sala-grid" id="salaGrid"></div>
+    <div class="sala-legend">
+      <div class="sala-legend-item"><div class="sala-legend-dot free"></div>Disponible</div>
+      <div class="sala-legend-item"><div class="sala-legend-dot busy"></div>Reservado</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="reservationModal">
+  <div class="modal-box">
+    <h3 id="modalTitle">Nueva reserva</h3>
+    <div class="modal-date" id="modalDate"></div>
+    <div class="field-label">Motivo</div>
+    <input type="text" class="field-input" id="resMotivo" placeholder="Ej: Reunión con cliente González">
+    <div class="field-label">Hora inicio</div>
+    <select class="field-input" id="resInicio" style="margin-bottom:12px"></select>
+    <div class="field-label">Hora fin</div>
+    <select class="field-input" id="resFin"></select>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveReservation()">Reservar</button>
+    </div>
+    <div class="login-error" id="resError" style="display:none"></div>
+    <div id="resDeleteWrap" style="display:none">
+      <button class="btn-delete" onclick="deleteReservation()">Cancelar reserva</button>
+    </div>
   </div>
 </div>
 
@@ -402,6 +494,7 @@ function showChangePasswordError(msg){const el=document.getElementById('changePa
 function enterApp(user,missed){
   document.getElementById('userBadge').style.display='block';
   document.getElementById('userBadgeName').textContent=user.name;
+  document.getElementById('navTabs').classList.add('show');
   if(ADMIN_ROLES.includes(user.role)){
     populateUnlockSelect();
     document.getElementById('adminWelcome').textContent=`Hola ${user.name}, ¿qué necesitás?`;
@@ -419,7 +512,22 @@ function enterApp(user,missed){
 function goToChat(){
   if(!currentUser)return;
   document.getElementById('welcomeTitle').textContent=`Hola ${currentUser.name}, ¿en qué te puedo ayudar hoy?`;
+  document.getElementById('navTabs').classList.add('show');
   showScreen('chatScreen');
+  setActiveTab('chat');
+}
+
+function switchTab(tab){
+  if(!currentUser)return;
+  setActiveTab(tab);
+  if(tab==='chat'){showScreen('chatScreen')}
+  else if(tab==='sala'){showScreen('salaScreen');renderSalaGrid()}
+  document.getElementById('navTabs').classList.add('show');
+}
+
+function setActiveTab(tab){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.toLowerCase().includes(tab==='chat'?'chat':'sala'))t.classList.add('active')});
 }
 
 function tryUnlock(){
@@ -470,7 +578,12 @@ function generateCode(){
 
 function showLoginError(msg){const el=document.getElementById('loginError');el.textContent=msg;el.style.display='block'}
 function showUnlockError(msg){const el=document.getElementById('unlockError');el.textContent=msg;el.style.display='block'}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const loginScreens=['loginScreen','passwordScreen','changePasswordScreen','blockedScreen'];
+  if(loginScreens.includes(id))document.getElementById('navTabs').classList.remove('show');
+}
 function showAlert(bid,tid,msg){document.getElementById(tid).innerHTML=msg;document.getElementById(bid).classList.add('show')}
 function dismissAlert(bid){document.getElementById(bid).classList.remove('show')}
 
@@ -851,6 +964,190 @@ async function sendMessage(){
   }catch(err){hideTyping();addMessage('bot','Hubo un problema de conexión. Por favor intentá de nuevo.')}
   isLoading=false;document.getElementById('sendBtn').disabled=false;input.focus();
 }
+
+// ===== SALA DE REUNIONES =====
+const SALA_HOURS=['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
+const SALA_STORAGE_KEY='census_sala_reservas';
+let salaWeekOffset=0;
+let editingReservation=null;
+
+function getSalaReservas(){
+  try{return JSON.parse(localStorage.getItem(SALA_STORAGE_KEY)||'[]')}catch(e){return[]}
+}
+function setSalaReservas(arr){localStorage.setItem(SALA_STORAGE_KEY,JSON.stringify(arr))}
+
+function getWeekDays(offset){
+  const now=new Date();
+  const day=now.getDay();
+  const monday=new Date(now);
+  monday.setDate(now.getDate()-((day===0?7:day)-1)+(offset*7));
+  const days=[];
+  for(let i=0;i<5;i++){
+    const d=new Date(monday);
+    d.setDate(monday.getDate()+i);
+    days.push(d);
+  }
+  return days;
+}
+
+function fmtDate(d){return d.toISOString().split('T')[0]}
+function fmtDateShort(d){return d.toLocaleDateString('es-UY',{weekday:'short',day:'numeric'}).replace('.','');}
+function fmtDateLong(d){return d.toLocaleDateString('es-UY',{weekday:'long',day:'numeric',month:'long'})}
+
+function renderSalaGrid(){
+  const days=getWeekDays(salaWeekOffset);
+  const todayStr=fmtDate(new Date());
+  const reservas=getSalaReservas();
+
+  // Week label
+  const d0=days[0],d4=days[4];
+  document.getElementById('weekLabel').textContent=`${d0.getDate()} ${d0.toLocaleDateString('es-UY',{month:'short'})} — ${d4.getDate()} ${d4.toLocaleDateString('es-UY',{month:'short'})} ${d4.getFullYear()}`;
+
+  const grid=document.getElementById('salaGrid');
+  grid.innerHTML='';
+
+  // Header row
+  const corner=document.createElement('div');
+  corner.className='sala-grid-header';
+  corner.textContent='Hora';
+  grid.appendChild(corner);
+  days.forEach(d=>{
+    const h=document.createElement('div');
+    h.className='sala-grid-header'+(fmtDate(d)===todayStr?' today-col':'');
+    h.textContent=fmtDateShort(d);
+    grid.appendChild(h);
+  });
+
+  // Time rows
+  for(let hi=0;hi<SALA_HOURS.length-1;hi++){
+    const hour=SALA_HOURS[hi];
+    const nextHour=SALA_HOURS[hi+1];
+    const timeCell=document.createElement('div');
+    timeCell.className='sala-time';
+    timeCell.textContent=hour;
+    grid.appendChild(timeCell);
+
+    days.forEach(d=>{
+      const dateStr=fmtDate(d);
+      const slot=document.createElement('div');
+      slot.className='sala-slot'+(dateStr===todayStr?' today-col':'');
+
+      // Find reservations that overlap this slot
+      const slotRes=reservas.filter(r=>r.date===dateStr&&r.start<=hour&&r.end>hour);
+      if(slotRes.length>0){
+        const r=slotRes[0];
+        if(r.start===hour){
+          const div=document.createElement('div');
+          div.className='sala-reservation';
+          div.innerHTML=`<div class="res-title">${r.motivo}</div><div class="res-who">${r.start}–${r.end} · ${r.user}</div>`;
+          div.onclick=(e)=>{e.stopPropagation();openModalEdit(r)};
+          slot.appendChild(div);
+        }
+      }else{
+        slot.onclick=()=>openModalNew(dateStr,hour,nextHour);
+      }
+      grid.appendChild(slot);
+    });
+  }
+}
+
+function populateTimeSelects(startVal,endVal){
+  const startSel=document.getElementById('resInicio');
+  const endSel=document.getElementById('resFin');
+  startSel.innerHTML='';
+  endSel.innerHTML='';
+  SALA_HOURS.forEach(h=>{
+    startSel.innerHTML+=`<option value="${h}"${h===startVal?' selected':''}>${h}</option>`;
+    endSel.innerHTML+=`<option value="${h}"${h===endVal?' selected':''}>${h}</option>`;
+  });
+}
+
+function openModalNew(dateStr,start,end){
+  editingReservation=null;
+  document.getElementById('modalTitle').textContent='Nueva reserva';
+  document.getElementById('modalDate').textContent=fmtDateLong(new Date(dateStr+'T12:00:00'));
+  document.getElementById('resMotivo').value='';
+  populateTimeSelects(start,end);
+  document.getElementById('resError').style.display='none';
+  document.getElementById('resDeleteWrap').style.display='none';
+  document.getElementById('reservationModal').classList.add('show');
+  document.getElementById('resMotivo').focus();
+}
+
+function openModalEdit(r){
+  editingReservation=r;
+  document.getElementById('modalTitle').textContent='Editar reserva';
+  document.getElementById('modalDate').textContent=fmtDateLong(new Date(r.date+'T12:00:00'));
+  document.getElementById('resMotivo').value=r.motivo;
+  populateTimeSelects(r.start,r.end);
+  document.getElementById('resError').style.display='none';
+  // Only show delete if it's your reservation or you're admin
+  const canDelete=currentUser&&(r.email===currentUser.email||ADMIN_ROLES.includes(currentUser.role));
+  document.getElementById('resDeleteWrap').style.display=canDelete?'block':'none';
+  document.getElementById('reservationModal').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('reservationModal').classList.remove('show');
+  editingReservation=null;
+}
+
+function saveReservation(){
+  const motivo=document.getElementById('resMotivo').value.trim();
+  const start=document.getElementById('resInicio').value;
+  const end=document.getElementById('resFin').value;
+  const errEl=document.getElementById('resError');
+  errEl.style.display='none';
+
+  if(!motivo){errEl.textContent='Ingresá un motivo.';errEl.style.display='block';return}
+  if(start>=end){errEl.textContent='La hora de fin debe ser posterior al inicio.';errEl.style.display='block';return}
+
+  let reservas=getSalaReservas();
+  const dateStr=editingReservation?editingReservation.date:document.getElementById('modalDate').textContent;
+  const actualDate=editingReservation?editingReservation.date:findDateFromModal();
+
+  // Check conflicts
+  const conflict=reservas.find(r=>{
+    if(editingReservation&&r.id===editingReservation.id)return false;
+    return r.date===actualDate&&r.start<end&&r.end>start;
+  });
+  if(conflict){errEl.textContent=`Conflicto: ${conflict.motivo} (${conflict.start}–${conflict.end}) reservado por ${conflict.user}.`;errEl.style.display='block';return}
+
+  if(editingReservation){
+    reservas=reservas.map(r=>r.id===editingReservation.id?{...r,motivo,start,end}:r);
+  }else{
+    reservas.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),date:actualDate,start,end,motivo,user:currentUser.name,email:currentUser.email,created:new Date().toISOString()});
+  }
+  setSalaReservas(reservas);
+  closeModal();
+  renderSalaGrid();
+}
+
+function findDateFromModal(){
+  // Extract date from the days currently displayed
+  const days=getWeekDays(salaWeekOffset);
+  const modalText=document.getElementById('modalDate').textContent.toLowerCase();
+  for(const d of days){
+    if(fmtDateLong(d).toLowerCase()===modalText)return fmtDate(d);
+  }
+  return fmtDate(days[0]);
+}
+
+function deleteReservation(){
+  if(!editingReservation)return;
+  let reservas=getSalaReservas().filter(r=>r.id!==editingReservation.id);
+  setSalaReservas(reservas);
+  closeModal();
+  renderSalaGrid();
+}
+
+function changeWeek(dir){
+  salaWeekOffset+=dir;
+  renderSalaGrid();
+}
+
+// Close modal on overlay click
+document.getElementById('reservationModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 
 async function sendSummary(){
   if(history.length===0){alert('No hay conversación para resumir todavía.');return}
