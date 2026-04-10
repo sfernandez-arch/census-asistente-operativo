@@ -161,6 +161,36 @@
   </div>
 </div>
 
+<div class="screen" id="passwordScreen">
+  <div class="login-box">
+    <div class="login-tag">Census · Acceso interno</div>
+    <h2 id="passwordTitle">Ingresá tu contraseña</h2>
+    <div class="login-divider"></div>
+    <p id="passwordSub">Hola <strong id="passwordUser"></strong>, ingresá tu contraseña para continuar.</p>
+    <div class="field-label">Contraseña</div>
+    <input type="password" class="field-input" id="passwordInput" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doPasswordLogin()">
+    <button class="btn-primary" onclick="doPasswordLogin()">Ingresar</button>
+    <div class="login-error" id="passwordError"></div>
+  </div>
+</div>
+
+<div class="screen" id="changePasswordScreen">
+  <div class="login-box">
+    <div class="login-tag">Census · Primer ingreso</div>
+    <h2>Cambiá tu contraseña</h2>
+    <div class="login-divider"></div>
+    <p>Es tu primer ingreso, <strong id="changePasswordUser"></strong>. Creá una contraseña nueva para continuar.</p>
+    <div class="field-label">Contraseña actual</div>
+    <input type="password" class="field-input" id="currentPasswordInput" placeholder="Census2026" onkeydown="if(event.key==='Enter')document.getElementById('newPasswordInput').focus()">
+    <div class="field-label">Contraseña nueva</div>
+    <input type="password" class="field-input" id="newPasswordInput" placeholder="Mínimo 8 caracteres" onkeydown="if(event.key==='Enter')document.getElementById('confirmPasswordInput').focus()">
+    <div class="field-label">Confirmar contraseña nueva</div>
+    <input type="password" class="field-input" id="confirmPasswordInput" placeholder="Repetí la contraseña nueva" onkeydown="if(event.key==='Enter')doChangePassword()">
+    <button class="btn-primary" onclick="doChangePassword()">Cambiar contraseña</button>
+    <div class="login-error" id="changePasswordError"></div>
+  </div>
+</div>
+
 <div class="screen" id="blockedScreen">
   <div class="blocked-box">
     <div class="blocked-icon">🔒</div>
@@ -282,12 +312,79 @@ function validateCode(e,c){const codes=JSON.parse(localStorage.getItem('census_u
 function consumeCode(e){const codes=JSON.parse(localStorage.getItem('census_unlock_codes')||'{}');delete codes[e];localStorage.setItem('census_unlock_codes',JSON.stringify(codes))}
 function generateRandom6(){return String(Math.floor(100000+Math.random()*900000))}
 
+const DEFAULT_PASSWORD='Census2026';
+let pendingLoginEmail=null;
+
+async function sha256(text){
+  const data=new TextEncoder().encode(text);
+  const hashBuffer=await crypto.subtle.digest('SHA-256',data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function getPasswordData(email){
+  const raw=localStorage.getItem('census_pwd_'+email.replace(/[@.]/g,'_'));
+  return raw?JSON.parse(raw):null;
+}
+
+function setPasswordData(email,hash){
+  localStorage.setItem('census_pwd_'+email.replace(/[@.]/g,'_'),JSON.stringify({hash,changed:true}));
+}
+
 function doLogin(){
   const email=document.getElementById('emailInput').value.trim().toLowerCase();
   document.getElementById('loginError').style.display='none';
   if(!email){showLoginError('Ingresá tu mail.');return}
   const user=ALLOWED_USERS[email];
   if(!user){showLoginError('Mail no reconocido. Consultá a Matías.');return}
+  pendingLoginEmail=email;
+  const pwdData=getPasswordData(email);
+  if(!pwdData||!pwdData.changed){
+    document.getElementById('changePasswordUser').textContent=user.name;
+    showScreen('changePasswordScreen');
+  }else{
+    document.getElementById('passwordUser').textContent=user.name;
+    document.getElementById('passwordInput').value='';
+    document.getElementById('passwordError').style.display='none';
+    showScreen('passwordScreen');
+  }
+}
+
+async function doPasswordLogin(){
+  const email=pendingLoginEmail;
+  const password=document.getElementById('passwordInput').value;
+  document.getElementById('passwordError').style.display='none';
+  if(!password){showPasswordError('Ingresá tu contraseña.');return}
+  const pwdData=getPasswordData(email);
+  const hash=await sha256(password);
+  if(hash!==pwdData.hash){showPasswordError('Contraseña incorrecta.');return}
+  proceedAfterPassword(email);
+}
+
+async function doChangePassword(){
+  const email=pendingLoginEmail;
+  const current=document.getElementById('currentPasswordInput').value;
+  const newPwd=document.getElementById('newPasswordInput').value;
+  const confirm=document.getElementById('confirmPasswordInput').value;
+  document.getElementById('changePasswordError').style.display='none';
+  if(!current){showChangePasswordError('Ingresá la contraseña actual.');return}
+  const pwdData=getPasswordData(email);
+  const currentHash=await sha256(current);
+  const defaultHash=await sha256(DEFAULT_PASSWORD);
+  const validHash=pwdData?pwdData.hash:defaultHash;
+  if(currentHash!==validHash){showChangePasswordError('La contraseña actual es incorrecta.');return}
+  if(!newPwd){showChangePasswordError('Ingresá una contraseña nueva.');return}
+  if(newPwd.length<8){showChangePasswordError('La contraseña nueva debe tener al menos 8 caracteres.');return}
+  if(newPwd!==confirm){showChangePasswordError('Las contraseñas nuevas no coinciden.');return}
+  const newHash=await sha256(newPwd);
+  setPasswordData(email,newHash);
+  document.getElementById('currentPasswordInput').value='';
+  document.getElementById('newPasswordInput').value='';
+  document.getElementById('confirmPasswordInput').value='';
+  proceedAfterPassword(email);
+}
+
+function proceedAfterPassword(email){
+  const user=ALLOWED_USERS[email];
   const storage=getStorage(email);
   const missed=storage.lastSummaryDate?Math.max(0,daysBetween(storage.lastSummaryDate,today())-1):0;
   if(!NO_BLOCK_ROLES.includes(user.role)&&missed>=MAX_MISSED_DAYS){
@@ -298,6 +395,9 @@ function doLogin(){
   currentUser={email,...user,missed,todayStr:today()};
   enterApp(user,missed);
 }
+
+function showPasswordError(msg){const el=document.getElementById('passwordError');el.textContent=msg;el.style.display='block'}
+function showChangePasswordError(msg){const el=document.getElementById('changePasswordError');el.textContent=msg;el.style.display='block'}
 
 function enterApp(user,missed){
   document.getElementById('userBadge').style.display='block';
