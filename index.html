@@ -180,7 +180,58 @@
   .sala-legend-dot.free{background:var(--bg);border:1px solid var(--border)}
   .sala-legend-dot.busy{background:var(--red-glow);border-left:3px solid var(--red)}
 
-  @media(max-width:600px){header{padding:0 16px}.bubble{max-width:88%}.nav-tabs{padding:0 16px}.sala-grid{grid-template-columns:50px repeat(5,1fr)}.sala-header{flex-direction:column;align-items:flex-start}}
+  /* CRM Panel */
+  #crmScreen{flex-direction:column;padding:24px 20px;overflow-y:auto}
+  .crm-container{width:100%;max-width:1200px;margin:0 auto;animation:fadeUp 0.5s ease both}
+  .crm-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  .crm-title{font-family:'Work Sans',sans-serif;font-size:20px;font-weight:600}
+  .crm-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .crm-search{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:8px 14px;font-family:'Lato',sans-serif;font-size:13px;color:var(--text);outline:none;width:220px;transition:border-color 0.2s}
+  .crm-search:focus{border-color:var(--red)}
+  .crm-search::placeholder{color:var(--text-dim)}
+  .crm-btn{background:var(--red);border:none;border-radius:3px;padding:8px 16px;font-family:'Work Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:white;cursor:pointer;transition:background 0.2s}
+  .crm-btn:hover{background:var(--red-dark)}
+  .crm-btn-outline{background:transparent;border:1px solid var(--border);border-radius:3px;padding:8px 14px;font-family:'Work Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+  .crm-btn-outline:hover{border-color:var(--red);color:var(--text)}
+  .crm-btn-outline.active{border-color:var(--red);color:var(--red);background:var(--red-glow)}
+  .crm-stats{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .crm-stat{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:14px 18px;flex:1;min-width:120px}
+  .crm-stat-value{font-family:'Work Sans',sans-serif;font-size:24px;font-weight:600;color:var(--text)}
+  .crm-stat-label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+  .crm-board{display:flex;gap:12px;overflow-x:auto;padding-bottom:16px;min-height:400px}
+  .crm-column{background:var(--surface);border:1px solid var(--border);border-radius:3px;min-width:200px;max-width:220px;flex-shrink:0;display:flex;flex-direction:column;max-height:calc(100vh - 300px)}
+  .crm-col-header{padding:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1}
+  .crm-col-title{font-family:'Work Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+  .crm-col-count{font-size:11px;color:var(--text-dim);background:var(--surface2);border-radius:10px;padding:2px 8px}
+  .crm-col-cards{padding:8px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:6px}
+  .crm-card{background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:10px 12px;cursor:pointer;transition:all 0.15s}
+  .crm-card:hover{border-color:var(--red);transform:translateY(-1px)}
+  .crm-card-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px}
+  .crm-card-meta{font-size:10px;color:var(--text-dim);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .crm-card-tag{font-size:9px;padding:2px 6px;border-radius:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+  .crm-card-tag.urgente{background:rgba(255,68,68,0.15);color:#ff6b6b}
+  .crm-card-tag.alta{background:rgba(255,160,40,0.15);color:#ffa028}
+  .crm-card-tag.normal{background:rgba(76,175,130,0.15);color:#4CAF82}
+  .crm-card-tag.baja{background:rgba(100,100,255,0.15);color:#8888ff}
+  .crm-view-list .crm-board{flex-direction:column;gap:2px}
+  .crm-view-list .crm-column{max-width:100%;min-width:100%;max-height:none}
+  .crm-view-list .crm-col-cards{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .crm-view-list .crm-card{min-width:200px;flex:1;max-width:300px}
+
+  /* CRM Modal */
+  .crm-modal-box{max-width:520px}
+  .crm-modal-box .field-input{margin-bottom:12px}
+  .crm-field-row{display:flex;gap:12px}
+  .crm-field-row>div{flex:1}
+  .crm-notes{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:12px;font-family:'Lato',sans-serif;font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:80px;transition:border-color 0.2s}
+  .crm-notes:focus{border-color:var(--red)}
+  .crm-notes::placeholder{color:var(--text-dim)}
+  .crm-history{margin-top:16px;border-top:1px solid var(--border);padding-top:12px}
+  .crm-history-title{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px}
+  .crm-history-item{font-size:11px;color:var(--text-dim);padding:4px 0;border-bottom:1px solid rgba(42,42,42,0.5)}
+  .crm-history-item span{color:var(--text-muted)}
+
+  @media(max-width:600px){header{padding:0 16px}.bubble{max-width:88%}.nav-tabs{padding:0 16px}.sala-grid{grid-template-columns:50px repeat(5,1fr)}.sala-header{flex-direction:column;align-items:flex-start}.crm-column{min-width:170px;max-width:170px}.crm-stats{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -279,6 +330,7 @@
 <nav class="nav-tabs" id="navTabs">
   <div class="nav-tab active" onclick="switchTab('chat')">Chat</div>
   <div class="nav-tab" onclick="switchTab('sala')">Sala de reuniones</div>
+  <div class="nav-tab" id="navCrm" style="display:none" onclick="switchTab('crm')">Cotizaciones</div>
 </nav>
 
 <div class="screen" id="salaScreen">
@@ -295,6 +347,72 @@
     <div class="sala-legend">
       <div class="sala-legend-item"><div class="sala-legend-dot free"></div>Disponible</div>
       <div class="sala-legend-item"><div class="sala-legend-dot busy"></div>Reservado</div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="crmScreen">
+  <div class="crm-container" id="crmContainer">
+    <div class="crm-top">
+      <div class="crm-title">Cotizaciones</div>
+      <div class="crm-actions">
+        <input type="text" class="crm-search" id="crmSearch" placeholder="Buscar cliente..." oninput="renderCrmBoard()">
+        <button class="crm-btn-outline" id="crmViewToggle" onclick="toggleCrmView()">Vista lista</button>
+        <button class="crm-btn" onclick="openCrmModal()">+ Nueva</button>
+      </div>
+    </div>
+    <div class="crm-stats" id="crmStats"></div>
+    <div class="crm-board" id="crmBoard"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="crmModal">
+  <div class="modal-box crm-modal-box">
+    <h3 id="crmModalTitle">Nueva cotización</h3>
+    <div class="modal-date" id="crmModalSub"></div>
+    <div class="field-label">Cliente</div>
+    <input type="text" class="field-input" id="crmCliente" placeholder="Nombre del cliente o empresa">
+    <div class="crm-field-row">
+      <div>
+        <div class="field-label">Estado</div>
+        <select class="field-input" id="crmEstado"></select>
+      </div>
+      <div>
+        <div class="field-label">Prioridad</div>
+        <select class="field-input" id="crmPrioridad">
+          <option value="normal">Normal</option>
+          <option value="alta">Alta</option>
+          <option value="urgente">Urgente</option>
+          <option value="baja">Baja</option>
+        </select>
+      </div>
+    </div>
+    <div class="crm-field-row">
+      <div>
+        <div class="field-label">Responsable</div>
+        <select class="field-input" id="crmResponsable">
+          <option value="Santiago">Santiago</option>
+          <option value="Joaquín">Joaquín</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Monto estimado (USD)</div>
+        <input type="number" class="field-input" id="crmMonto" placeholder="0">
+      </div>
+    </div>
+    <div class="field-label">Notas</div>
+    <textarea class="crm-notes" id="crmNotas" placeholder="Detalles, contacto, observaciones..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeCrmModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveCrmCard()">Guardar</button>
+    </div>
+    <div class="login-error" id="crmError" style="display:none"></div>
+    <div id="crmDeleteWrap" style="display:none">
+      <button class="btn-delete" onclick="deleteCrmCard()">Eliminar cotización</button>
+    </div>
+    <div class="crm-history" id="crmHistory" style="display:none">
+      <div class="crm-history-title">Historial de movimientos</div>
+      <div id="crmHistoryList"></div>
     </div>
   </div>
 </div>
@@ -495,6 +613,7 @@ function enterApp(user,missed){
   document.getElementById('userBadge').style.display='block';
   document.getElementById('userBadgeName').textContent=user.name;
   document.getElementById('navTabs').classList.add('show');
+  if(CRM_USERS.includes(currentUser.email))document.getElementById('navCrm').style.display='';
   if(ADMIN_ROLES.includes(user.role)){
     populateUnlockSelect();
     document.getElementById('adminWelcome').textContent=`Hola ${user.name}, ¿qué necesitás?`;
@@ -522,12 +641,14 @@ function switchTab(tab){
   setActiveTab(tab);
   if(tab==='chat'){showScreen('chatScreen')}
   else if(tab==='sala'){showScreen('salaScreen');renderSalaGrid()}
+  else if(tab==='crm'){showScreen('crmScreen');fetchCrmCards().then(()=>renderCrmBoard())}
   document.getElementById('navTabs').classList.add('show');
 }
 
 function setActiveTab(tab){
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.toLowerCase().includes(tab==='chat'?'chat':'sala'))t.classList.add('active')});
+  const map={chat:'chat',sala:'sala',crm:'cotizaciones'};
+  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.toLowerCase().includes(map[tab]||tab))t.classList.add('active')});
 }
 
 function tryUnlock(){
@@ -964,6 +1085,161 @@ async function sendMessage(){
   }catch(err){hideTyping();addMessage('bot','Hubo un problema de conexión. Por favor intentá de nuevo.')}
   isLoading=false;document.getElementById('sendBtn').disabled=false;input.focus();
 }
+
+// ===== CRM COTIZACIONES =====
+const CRM_API=API_URL+'/crm';
+const CRM_COLUMNS=['Consultorías FD','Lista de tareas','En proceso','Hecho','Aceptado','Rechazado','Hecho y cobrado'];
+const CRM_USERS=['sfernandez@censusuy.com','jsilvera@censusuy.com'];
+let crmCards=[];
+let crmEditing=null;
+let crmListView=false;
+
+async function fetchCrmCards(){
+  try{const r=await fetch(CRM_API);crmCards=await r.json()}catch(e){crmCards=[]}
+}
+
+function renderCrmBoard(){
+  const search=(document.getElementById('crmSearch').value||'').toLowerCase();
+  const filtered=search?crmCards.filter(c=>c.cliente.toLowerCase().includes(search)||
+    (c.notas||'').toLowerCase().includes(search)||(c.responsable||'').toLowerCase().includes(search)):crmCards;
+
+  // Stats
+  const statsEl=document.getElementById('crmStats');
+  const total=crmCards.length;
+  const activas=crmCards.filter(c=>!['Rechazado','Hecho y cobrado'].includes(c.estado)).length;
+  const aceptadas=crmCards.filter(c=>c.estado==='Aceptado').length;
+  const montoTotal=crmCards.filter(c=>c.estado==='Aceptado'&&c.monto).reduce((s,c)=>s+(parseFloat(c.monto)||0),0);
+  statsEl.innerHTML=`
+    <div class="crm-stat"><div class="crm-stat-value">${total}</div><div class="crm-stat-label">Total</div></div>
+    <div class="crm-stat"><div class="crm-stat-value">${activas}</div><div class="crm-stat-label">Activas</div></div>
+    <div class="crm-stat"><div class="crm-stat-value">${aceptadas}</div><div class="crm-stat-label">Aceptadas</div></div>
+    <div class="crm-stat"><div class="crm-stat-value">${montoTotal?'$'+montoTotal.toLocaleString('es-UY'):'—'}</div><div class="crm-stat-label">Monto aceptado</div></div>`;
+
+  // Board
+  const board=document.getElementById('crmBoard');
+  board.innerHTML='';
+  CRM_COLUMNS.forEach(col=>{
+    const colCards=filtered.filter(c=>c.estado===col);
+    const colDiv=document.createElement('div');
+    colDiv.className='crm-column';
+    colDiv.innerHTML=`<div class="crm-col-header"><span class="crm-col-title">${col}</span><span class="crm-col-count">${colCards.length}</span></div>`;
+    const cardsDiv=document.createElement('div');
+    cardsDiv.className='crm-col-cards';
+    colCards.forEach(card=>{
+      const cd=document.createElement('div');
+      cd.className='crm-card';
+      cd.onclick=()=>openCrmModalEdit(card);
+      const prioTag=card.prioridad&&card.prioridad!=='normal'?`<span class="crm-card-tag ${card.prioridad}">${card.prioridad}</span>`:'';
+      const resp=card.responsable?`<span>${card.responsable}</span>`:'';
+      const monto=card.monto?`<span>$${parseFloat(card.monto).toLocaleString('es-UY')}</span>`:'';
+      cd.innerHTML=`<div class="crm-card-name">${card.cliente}</div><div class="crm-card-meta">${prioTag}${resp}${monto}</div>`;
+      cardsDiv.appendChild(cd);
+    });
+    colDiv.appendChild(cardsDiv);
+    board.appendChild(colDiv);
+  });
+}
+
+function populateCrmEstado(val){
+  const sel=document.getElementById('crmEstado');
+  sel.innerHTML='';
+  CRM_COLUMNS.forEach(c=>{sel.innerHTML+=`<option value="${c}"${c===val?' selected':''}>${c}</option>`});
+}
+
+function openCrmModal(){
+  crmEditing=null;
+  document.getElementById('crmModalTitle').textContent='Nueva cotización';
+  document.getElementById('crmModalSub').textContent='';
+  document.getElementById('crmCliente').value='';
+  populateCrmEstado('Lista de tareas');
+  document.getElementById('crmPrioridad').value='normal';
+  document.getElementById('crmResponsable').value=currentUser.name==='Joaquín'?'Joaquín':'Santiago';
+  document.getElementById('crmMonto').value='';
+  document.getElementById('crmNotas').value='';
+  document.getElementById('crmError').style.display='none';
+  document.getElementById('crmDeleteWrap').style.display='none';
+  document.getElementById('crmHistory').style.display='none';
+  document.getElementById('crmModal').classList.add('show');
+  document.getElementById('crmCliente').focus();
+}
+
+function openCrmModalEdit(card){
+  crmEditing=card;
+  document.getElementById('crmModalTitle').textContent='Editar cotización';
+  const created=card.created?new Date(card.created).toLocaleDateString('es-UY',{day:'numeric',month:'short',year:'numeric'}):'';
+  document.getElementById('crmModalSub').textContent=created?`Creada el ${created} por ${card.createdBy||'—'}`:'';
+  document.getElementById('crmCliente').value=card.cliente;
+  populateCrmEstado(card.estado);
+  document.getElementById('crmPrioridad').value=card.prioridad||'normal';
+  document.getElementById('crmResponsable').value=card.responsable||'Santiago';
+  document.getElementById('crmMonto').value=card.monto||'';
+  document.getElementById('crmNotas').value=card.notas||'';
+  document.getElementById('crmError').style.display='none';
+  document.getElementById('crmDeleteWrap').style.display='block';
+  // History
+  const histEl=document.getElementById('crmHistory');
+  const listEl=document.getElementById('crmHistoryList');
+  if(card.history&&card.history.length>0){
+    histEl.style.display='block';
+    listEl.innerHTML=card.history.slice(-10).reverse().map(h=>`<div class="crm-history-item"><span>${h.date}</span> — ${h.action}</div>`).join('');
+  }else{histEl.style.display='none'}
+  document.getElementById('crmModal').classList.add('show');
+}
+
+function closeCrmModal(){
+  document.getElementById('crmModal').classList.remove('show');
+  crmEditing=null;
+}
+
+async function saveCrmCard(){
+  const cliente=document.getElementById('crmCliente').value.trim();
+  const estado=document.getElementById('crmEstado').value;
+  const prioridad=document.getElementById('crmPrioridad').value;
+  const responsable=document.getElementById('crmResponsable').value;
+  const monto=document.getElementById('crmMonto').value;
+  const notas=document.getElementById('crmNotas').value.trim();
+  const errEl=document.getElementById('crmError');
+  errEl.style.display='none';
+  if(!cliente){errEl.textContent='Ingresá el nombre del cliente.';errEl.style.display='block';return}
+  try{
+    const body={cliente,estado,prioridad,responsable,monto:monto||null,notas:notas||null,user:currentUser.name};
+    let res;
+    if(crmEditing){
+      body.id=crmEditing.id;
+      const oldEstado=crmEditing.estado;
+      if(oldEstado!==estado)body.estadoChange={from:oldEstado,to:estado};
+      res=await fetch(CRM_API,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    }else{
+      body.createdBy=currentUser.name;
+      res=await fetch(CRM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    }
+    const data=await res.json();
+    if(!res.ok){errEl.textContent=data.error||'Error al guardar.';errEl.style.display='block';return}
+    closeCrmModal();
+    await fetchCrmCards();
+    renderCrmBoard();
+  }catch(e){errEl.textContent='Error de conexión.';errEl.style.display='block'}
+}
+
+async function deleteCrmCard(){
+  if(!crmEditing)return;
+  try{
+    await fetch(CRM_API,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:crmEditing.id})});
+    closeCrmModal();
+    await fetchCrmCards();
+    renderCrmBoard();
+  }catch(e){alert('Error al eliminar.')}
+}
+
+function toggleCrmView(){
+  crmListView=!crmListView;
+  const container=document.getElementById('crmContainer');
+  const btn=document.getElementById('crmViewToggle');
+  if(crmListView){container.classList.add('crm-view-list');btn.textContent='Vista tablero';btn.classList.add('active')}
+  else{container.classList.remove('crm-view-list');btn.textContent='Vista lista';btn.classList.remove('active')}
+}
+
+document.getElementById('crmModal').addEventListener('click',function(e){if(e.target===this)closeCrmModal()});
 
 // ===== SALA DE REUNIONES =====
 const SALA_API=API_URL+'/sala/reservas';
