@@ -966,15 +966,12 @@ async function sendMessage(){
 }
 
 // ===== SALA DE REUNIONES =====
+const SALA_API=API_URL+'/sala/reservas';
 const SALA_HOURS=['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
-const SALA_STORAGE_KEY='census_sala_reservas';
 let salaWeekOffset=0;
+let salaReservas=[];
 let editingReservation=null;
-
-function getSalaReservas(){
-  try{return JSON.parse(localStorage.getItem(SALA_STORAGE_KEY)||'[]')}catch(e){return[]}
-}
-function setSalaReservas(arr){localStorage.setItem(SALA_STORAGE_KEY,JSON.stringify(arr))}
+let salaModalDate=null;
 
 function getWeekDays(offset){
   const now=new Date();
@@ -993,20 +990,27 @@ function getWeekDays(offset){
 function fmtDate(d){return d.toISOString().split('T')[0]}
 function fmtDateShort(d){return d.toLocaleDateString('es-UY',{weekday:'short',day:'numeric'}).replace('.','');}
 function fmtDateLong(d){return d.toLocaleDateString('es-UY',{weekday:'long',day:'numeric',month:'long'})}
+function getMondayStr(offset){const days=getWeekDays(offset);return fmtDate(days[0])}
 
-function renderSalaGrid(){
+async function fetchReservas(){
+  try{
+    const monday=getMondayStr(salaWeekOffset);
+    const res=await fetch(`${SALA_API}?week=${monday}`);
+    salaReservas=await res.json();
+  }catch(e){salaReservas=[]}
+}
+
+async function renderSalaGrid(){
+  await fetchReservas();
   const days=getWeekDays(salaWeekOffset);
   const todayStr=fmtDate(new Date());
-  const reservas=getSalaReservas();
 
-  // Week label
   const d0=days[0],d4=days[4];
   document.getElementById('weekLabel').textContent=`${d0.getDate()} ${d0.toLocaleDateString('es-UY',{month:'short'})} — ${d4.getDate()} ${d4.toLocaleDateString('es-UY',{month:'short'})} ${d4.getFullYear()}`;
 
   const grid=document.getElementById('salaGrid');
   grid.innerHTML='';
 
-  // Header row
   const corner=document.createElement('div');
   corner.className='sala-grid-header';
   corner.textContent='Hora';
@@ -1018,7 +1022,6 @@ function renderSalaGrid(){
     grid.appendChild(h);
   });
 
-  // Time rows
   for(let hi=0;hi<SALA_HOURS.length-1;hi++){
     const hour=SALA_HOURS[hi];
     const nextHour=SALA_HOURS[hi+1];
@@ -1032,8 +1035,7 @@ function renderSalaGrid(){
       const slot=document.createElement('div');
       slot.className='sala-slot'+(dateStr===todayStr?' today-col':'');
 
-      // Find reservations that overlap this slot
-      const slotRes=reservas.filter(r=>r.date===dateStr&&r.start<=hour&&r.end>hour);
+      const slotRes=salaReservas.filter(r=>r.date===dateStr&&r.start<=hour&&r.end>hour);
       if(slotRes.length>0){
         const r=slotRes[0];
         if(r.start===hour){
@@ -1064,6 +1066,7 @@ function populateTimeSelects(startVal,endVal){
 
 function openModalNew(dateStr,start,end){
   editingReservation=null;
+  salaModalDate=dateStr;
   document.getElementById('modalTitle').textContent='Nueva reserva';
   document.getElementById('modalDate').textContent=fmtDateLong(new Date(dateStr+'T12:00:00'));
   document.getElementById('resMotivo').value='';
@@ -1076,12 +1079,12 @@ function openModalNew(dateStr,start,end){
 
 function openModalEdit(r){
   editingReservation=r;
+  salaModalDate=r.date;
   document.getElementById('modalTitle').textContent='Editar reserva';
   document.getElementById('modalDate').textContent=fmtDateLong(new Date(r.date+'T12:00:00'));
   document.getElementById('resMotivo').value=r.motivo;
   populateTimeSelects(r.start,r.end);
   document.getElementById('resError').style.display='none';
-  // Only show delete if it's your reservation or you're admin
   const canDelete=currentUser&&(r.email===currentUser.email||ADMIN_ROLES.includes(currentUser.role));
   document.getElementById('resDeleteWrap').style.display=canDelete?'block':'none';
   document.getElementById('reservationModal').classList.add('show');
@@ -1090,9 +1093,10 @@ function openModalEdit(r){
 function closeModal(){
   document.getElementById('reservationModal').classList.remove('show');
   editingReservation=null;
+  salaModalDate=null;
 }
 
-function saveReservation(){
+async function saveReservation(){
   const motivo=document.getElementById('resMotivo').value.trim();
   const start=document.getElementById('resInicio').value;
   const end=document.getElementById('resFin').value;
@@ -1102,43 +1106,35 @@ function saveReservation(){
   if(!motivo){errEl.textContent='Ingresá un motivo.';errEl.style.display='block';return}
   if(start>=end){errEl.textContent='La hora de fin debe ser posterior al inicio.';errEl.style.display='block';return}
 
-  let reservas=getSalaReservas();
-  const dateStr=editingReservation?editingReservation.date:document.getElementById('modalDate').textContent;
-  const actualDate=editingReservation?editingReservation.date:findDateFromModal();
-
-  // Check conflicts
-  const conflict=reservas.find(r=>{
-    if(editingReservation&&r.id===editingReservation.id)return false;
-    return r.date===actualDate&&r.start<end&&r.end>start;
-  });
-  if(conflict){errEl.textContent=`Conflicto: ${conflict.motivo} (${conflict.start}–${conflict.end}) reservado por ${conflict.user}.`;errEl.style.display='block';return}
-
-  if(editingReservation){
-    reservas=reservas.map(r=>r.id===editingReservation.id?{...r,motivo,start,end}:r);
-  }else{
-    reservas.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),date:actualDate,start,end,motivo,user:currentUser.name,email:currentUser.email,created:new Date().toISOString()});
-  }
-  setSalaReservas(reservas);
-  closeModal();
-  renderSalaGrid();
+  const dateStr=salaModalDate;
+  try{
+    let res;
+    if(editingReservation){
+      res=await fetch(SALA_API,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:editingReservation.id,date:dateStr,start,end,motivo})});
+    }else{
+      res=await fetch(SALA_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({date:dateStr,start,end,motivo,user:currentUser.name,email:currentUser.email})});
+    }
+    const data=await res.json();
+    if(!res.ok){
+      if(data.error==='conflict'){
+        errEl.textContent=`Conflicto: ${data.conflictWith.motivo} (${data.conflictWith.start}–${data.conflictWith.end}) reservado por ${data.conflictWith.user}.`;
+      }else{
+        errEl.textContent=data.error||'Error al guardar.';
+      }
+      errEl.style.display='block';return;
+    }
+    closeModal();
+    renderSalaGrid();
+  }catch(e){errEl.textContent='Error de conexión.';errEl.style.display='block'}
 }
 
-function findDateFromModal(){
-  // Extract date from the days currently displayed
-  const days=getWeekDays(salaWeekOffset);
-  const modalText=document.getElementById('modalDate').textContent.toLowerCase();
-  for(const d of days){
-    if(fmtDateLong(d).toLowerCase()===modalText)return fmtDate(d);
-  }
-  return fmtDate(days[0]);
-}
-
-function deleteReservation(){
+async function deleteReservation(){
   if(!editingReservation)return;
-  let reservas=getSalaReservas().filter(r=>r.id!==editingReservation.id);
-  setSalaReservas(reservas);
-  closeModal();
-  renderSalaGrid();
+  try{
+    await fetch(SALA_API,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:editingReservation.id,date:editingReservation.date})});
+    closeModal();
+    renderSalaGrid();
+  }catch(e){alert('Error al eliminar la reserva.')}
 }
 
 function changeWeek(dir){
@@ -1146,7 +1142,6 @@ function changeWeek(dir){
   renderSalaGrid();
 }
 
-// Close modal on overlay click
 document.getElementById('reservationModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 
 async function sendSummary(){
