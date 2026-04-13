@@ -1094,8 +1094,10 @@ let crmCards=[];
 let crmEditing=null;
 let crmListView=false;
 
+function crmUserKey(){return currentUser?currentUser.email.split('@')[0]:'unknown'}
+
 async function fetchCrmCards(){
-  try{const r=await fetch(CRM_API);crmCards=await r.json()}catch(e){crmCards=[]}
+  try{const r=await fetch(`${CRM_API}?owner=${crmUserKey()}`);crmCards=await r.json()}catch(e){crmCards=[]}
 }
 
 function renderCrmBoard(){
@@ -1206,11 +1208,13 @@ async function saveCrmCard(){
     let res;
     if(crmEditing){
       body.id=crmEditing.id;
+      body.owner=crmUserKey();
       const oldEstado=crmEditing.estado;
       if(oldEstado!==estado)body.estadoChange={from:oldEstado,to:estado};
       res=await fetch(CRM_API,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     }else{
       body.createdBy=currentUser.name;
+      body.owner=crmUserKey();
       res=await fetch(CRM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     }
     const data=await res.json();
@@ -1224,7 +1228,7 @@ async function saveCrmCard(){
 async function deleteCrmCard(){
   if(!crmEditing)return;
   try{
-    await fetch(CRM_API,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:crmEditing.id})});
+    await fetch(CRM_API,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:crmEditing.id,owner:crmUserKey()})});
     closeCrmModal();
     await fetchCrmCards();
     renderCrmBoard();
