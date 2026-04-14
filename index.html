@@ -646,8 +646,15 @@ const ALLOWED_USERS={
 
 const ADMIN_ROLES=['socio','encargado'];
 const NO_BLOCK_ROLES=['socio','tercerizado'];
+const SESSION_DURATION_MS=4*60*60*1000; // 4 horas
 let currentUser=null,history=[],isLoading=false,countdownInterval=null;
 let attachedFile=null,attachedFileData=null,attachedFileType=null;
+
+function saveSession(email){localStorage.setItem('census_session',JSON.stringify({email,ts:Date.now()}))}
+function clearSession(){localStorage.removeItem('census_session')}
+function getSession(){
+  try{const s=JSON.parse(localStorage.getItem('census_session'));if(s&&s.email&&(Date.now()-s.ts)<SESSION_DURATION_MS)return s;clearSession();return null}catch(e){return null}
+}
 
 function storageKey(e){return 'census_'+e.replace(/[@.]/g,'_')}
 function getStorage(e){const r=localStorage.getItem(storageKey(e));return r?JSON.parse(r):{lastSummaryDate:null}}
@@ -740,6 +747,7 @@ function proceedAfterPassword(email){
     showScreen('blockedScreen');return
   }
   currentUser={email,...user,missed,todayStr:today()};
+  saveSession(email);
   enterApp(user,missed);
 }
 
@@ -1886,6 +1894,17 @@ async function sendSummary(){
     dismissAlert('alertBannerRed');
   }
 }
+
+// Auto-login from saved session
+(function(){
+  const session=getSession();
+  if(!session)return;
+  const user=ALLOWED_USERS[session.email];
+  if(!user)return;
+  const pwdData=getPasswordData(session.email);
+  if(!pwdData||!pwdData.changed)return; // needs password setup, can't skip
+  proceedAfterPassword(session.email);
+})();
 </script>
 </body>
 </html>
