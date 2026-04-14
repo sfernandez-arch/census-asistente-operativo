@@ -1320,7 +1320,7 @@ function calcCotizacion(){
 
   if(hasSueldos){
     if(conEmpleados){monthlyUsd+=100+empleados*25}
-    else{monthlyUsd+=50} // solo aportes patronales sin dependientes
+    // sin empleados: aportes del titular/socio incluidos en la base, no suma
   }
 
   if(hasFiscal){
