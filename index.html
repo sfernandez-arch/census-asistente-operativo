@@ -302,6 +302,7 @@
     <input type="password" class="field-input" id="passwordInput" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doPasswordLogin()">
     <button class="btn-primary" onclick="doPasswordLogin()">Ingresar</button>
     <div class="login-error" id="passwordError"></div>
+    <div style="text-align:center;margin-top:16px"><a href="#" style="font-size:12px;color:var(--text-dim);text-decoration:underline;cursor:pointer" onclick="event.preventDefault();resetPassword()">Olvidé mi contraseña</a></div>
   </div>
 </div>
 
@@ -718,6 +719,13 @@ function proceedAfterPassword(email){
   enterApp(user,missed);
 }
 
+function resetPassword(){
+  if(!pendingLoginEmail)return;
+  localStorage.removeItem('census_pwd_'+pendingLoginEmail.replace(/[@.]/g,'_'));
+  const user=ALLOWED_USERS[pendingLoginEmail];
+  document.getElementById('changePasswordUser').textContent=user.name;
+  showScreen('changePasswordScreen');
+}
 function showPasswordError(msg){const el=document.getElementById('passwordError');el.textContent=msg;el.style.display='block'}
 function showChangePasswordError(msg){const el=document.getElementById('changePasswordError');el.textContent=msg;el.style.display='block'}
 
