@@ -1274,17 +1274,17 @@ async function fetchTcBcu(){
     const dateStr=lastMonth.toISOString().split('T')[0];
     // Use a CORS proxy or fallback to manual entry
     // For now set a reasonable default and let user override
-    if(!cotTcBcu){cotTcBcu=43.5} // Fallback
+    if(!cotTcBcu){cotTcBcu=40.48} // BCU DLS USA CABLE 31/03/2026
     document.getElementById('cotTc').value=cotTcBcu;
     document.getElementById('cotTcInfo').textContent=`Último día del mes anterior. Ajustá si cambió.`;
-  }catch(e){cotTcBcu=43.5}
+  }catch(e){cotTcBcu=40.48}
 }
 
 function calcCotizacion(){
   const entidad=document.getElementById('cotEntidad').value;
   const cede=document.getElementById('cotCede').value;
   const moneda=document.getElementById('cotMoneda').value;
-  const tc=parseFloat(document.getElementById('cotTc').value)||cotTcBcu||43.5;
+  const tc=parseFloat(document.getElementById('cotTc').value)||cotTcBcu||40.48;
 
   // Show/hide TC field
   document.getElementById('cotTcField').style.display=moneda==='UYU'?'':'none';
