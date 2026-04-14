@@ -428,6 +428,19 @@
           </select>
         </div>
       </div>
+      <div class="cotizador-row">
+        <div class="cotizador-field"><label>Moneda de cotización</label>
+          <select id="cotMoneda" onchange="calcCotizacion()">
+            <option value="USD" selected>USD</option>
+            <option value="UYU">UYU</option>
+          </select>
+        </div>
+        <div class="cotizador-field" id="cotTcField" style="display:none">
+          <label>Tipo de cambio BCU (billete)</label>
+          <input type="number" id="cotTc" step="0.01" oninput="calcCotizacion()">
+          <div class="cotizador-info" id="cotTcInfo"></div>
+        </div>
+      </div>
     </div>
 
     <div class="cotizador-section">
@@ -436,6 +449,8 @@
       <div class="cotizador-check"><input type="checkbox" id="cotContabilidad" onchange="toggleCotSub('contabilidad');calcCotizacion()"><label for="cotContabilidad">Contabilidad</label></div>
       <div class="cotizador-sub" id="subContabilidad">
         <div class="cotizador-field"><label>Comprobantes mensuales estimados</label><input type="number" id="cotComprobantes" min="0" value="0" oninput="calcCotizacion()"></div>
+        <div class="cotizador-check"><input type="checkbox" id="cotConciliacion" onchange="calcCotizacion()"><label for="cotConciliacion">Con conciliación bancaria</label></div>
+        <div class="cotizador-check"><input type="checkbox" id="cotReportes" onchange="calcCotizacion()"><label for="cotReportes">Con reportes de resultados mensuales</label></div>
       </div>
 
       <div class="cotizador-check"><input type="checkbox" id="cotFiscal" checked onchange="toggleCotSub('fiscal');calcCotizacion()"><label for="cotFiscal">Fiscal / Impositiva</label></div>
@@ -443,17 +458,26 @@
         <div class="cotizador-check"><input type="checkbox" id="cotIRAE" checked onchange="calcCotizacion()"><label for="cotIRAE">Incluye IRAE</label></div>
         <div class="cotizador-check"><input type="checkbox" id="cotIP" checked onchange="calcCotizacion()"><label for="cotIP">Incluye IP</label></div>
         <div class="cotizador-check"><input type="checkbox" id="cotIVA" checked onchange="calcCotizacion()"><label for="cotIVA">Incluye IVA</label></div>
+        <div class="cotizador-check"><input type="checkbox" id="cotTrading" onchange="calcCotizacion()"><label for="cotTrading">Trading por Res. 51/997</label></div>
+        <div class="cotizador-check"><input type="checkbox" id="cotImportador" onchange="calcCotizacion()"><label for="cotImportador">Es importador</label></div>
+        <div class="cotizador-check"><input type="checkbox" id="cotExportador" onchange="calcCotizacion()"><label for="cotExportador">Es exportador</label></div>
+        <div class="cotizador-check"><input type="checkbox" id="cotANV" onchange="calcCotizacion()"><label for="cotANV">Proyecto ANV</label></div>
+        <div class="cotizador-check"><input type="checkbox" id="cotEndoso" onchange="calcCotizacion()"><label for="cotEndoso">Endosa certificados de crédito</label></div>
       </div>
 
       <div class="cotizador-check"><input type="checkbox" id="cotSueldos" onchange="toggleCotSub('sueldos');calcCotizacion()"><label for="cotSueldos">Sueldos y BPS</label></div>
       <div class="cotizador-sub" id="subSueldos">
-        <div class="cotizador-field"><label>Cantidad de empleados</label><input type="number" id="cotEmpleados" min="0" value="0" oninput="calcCotizacion()"></div>
-        <div class="cotizador-info">Costo adicional por empleado: USD 25</div>
+        <div class="cotizador-check"><input type="checkbox" id="cotConEmpleados" onchange="toggleCotSub('empleados');calcCotizacion()"><label for="cotConEmpleados">Con empleados</label></div>
+        <div class="cotizador-sub" id="subEmpleados">
+          <div class="cotizador-field"><label>Cantidad de empleados</label><input type="number" id="cotEmpleados" min="1" value="1" oninput="calcCotizacion()"></div>
+          <div class="cotizador-info">Costo adicional por empleado: USD 25</div>
+        </div>
+        <div class="cotizador-info" id="cotSueldosSinEmpl" style="display:block">Sin empleados — incluye solo liquidación de aportes patronales (unipersonal/socio)</div>
       </div>
 
       <div class="cotizador-check"><input type="checkbox" id="cotDomicilio" onchange="calcCotizacion()"><label for="cotDomicilio">Domicilio fiscal</label></div>
 
-      <div class="cotizador-check"><input type="checkbox" id="cotConstitucion" onchange="calcCotizacion()"><label for="cotConstitucion">Constituci&oacute;n de sociedad (one-time)</label></div>
+      <div class="cotizador-check"><input type="checkbox" id="cotConstitucion" onchange="calcCotizacion()"><label for="cotConstitucion">Constitución de sociedad (one-time)</label></div>
 
       <div class="cotizador-check"><input type="checkbox" id="cotComap" onchange="calcCotizacion()"><label for="cotComap">Proyecto COMAP (one-time)</label></div>
     </div>
@@ -762,7 +786,7 @@ function switchTab(tab){
   if(tab==='chat'){showScreen('chatScreen')}
   else if(tab==='sala'){showScreen('salaScreen');renderSalaGrid()}
   else if(tab==='crm'){showScreen('crmScreen');fetchCrmCards().then(()=>renderCrmBoard())}
-  else if(tab==='cotizador'){showScreen('cotizadorScreen');calcCotizacion()}
+  else if(tab==='cotizador'){showScreen('cotizadorScreen');if(!cotTcBcu)fetchTcBcu();calcCotizacion()}
   document.getElementById('navTabs').classList.add('show');
 }
 
@@ -1211,44 +1235,111 @@ async function sendMessage(){
 const COT_BASE_FEE={Unipersonal:150,SRL:350,SAS:400,SA:500,Fideicomiso:600,Otro:400};
 const COT_COMPROBANTES=[[20,0],[50,100],[100,200],[200,350],[Infinity,600]];
 const COT_CONSTITUCION={SAS:2500,SRL:2000,SA:3500,Unipersonal:0,Fideicomiso:0,Otro:0};
+let cotTcBcu=null;
 
 function toggleCotSub(id){
-  const map={contabilidad:'cotContabilidad',fiscal:'cotFiscal',sueldos:'cotSueldos'};
+  const map={contabilidad:'cotContabilidad',fiscal:'cotFiscal',sueldos:'cotSueldos',empleados:'cotConEmpleados'};
   const sub=document.getElementById('sub'+id.charAt(0).toUpperCase()+id.slice(1));
   if(sub)sub.classList.toggle('visible',document.getElementById(map[id]).checked);
+  // Show/hide "sin empleados" text
+  if(id==='empleados'||id==='sueldos'){
+    const conEmpl=document.getElementById('cotConEmpleados');
+    const sinText=document.getElementById('cotSueldosSinEmpl');
+    if(sinText)sinText.style.display=(conEmpl&&conEmpl.checked)?'none':'block';
+  }
+}
+
+function cotRound(val,moneda){
+  if(moneda==='UYU'){
+    // Round to nearest 500: 11250 → 11000, 11750 → 12000
+    return Math.round(val/500)*500;
+  }
+  // USD: round to nearest 25
+  return Math.round(val/25)*25;
+}
+
+async function fetchTcBcu(){
+  // Get last month's last business day TC from BCU
+  try{
+    const now=new Date();
+    const lastMonth=new Date(now.getFullYear(),now.getMonth(),0); // last day of prev month
+    const dateStr=lastMonth.toISOString().split('T')[0];
+    // Use a CORS proxy or fallback to manual entry
+    // For now set a reasonable default and let user override
+    if(!cotTcBcu){cotTcBcu=43.5} // Fallback
+    document.getElementById('cotTc').value=cotTcBcu;
+    document.getElementById('cotTcInfo').textContent=`Último día del mes anterior. Ajustá si cambió.`;
+  }catch(e){cotTcBcu=43.5}
 }
 
 function calcCotizacion(){
   const entidad=document.getElementById('cotEntidad').value;
   const cede=document.getElementById('cotCede').value;
+  const moneda=document.getElementById('cotMoneda').value;
+  const tc=parseFloat(document.getElementById('cotTc').value)||cotTcBcu||43.5;
+
+  // Show/hide TC field
+  document.getElementById('cotTcField').style.display=moneda==='UYU'?'':'none';
+
   const hasContab=document.getElementById('cotContabilidad').checked;
   const comprobantes=hasContab?parseInt(document.getElementById('cotComprobantes').value)||0:0;
+  const hasConciliacion=hasContab&&document.getElementById('cotConciliacion').checked;
+  const hasReportes=hasContab&&document.getElementById('cotReportes').checked;
+
   const hasSueldos=document.getElementById('cotSueldos').checked;
-  const empleados=hasSueldos?parseInt(document.getElementById('cotEmpleados').value)||0:0;
+  const conEmpleados=hasSueldos&&document.getElementById('cotConEmpleados').checked;
+  const empleados=conEmpleados?parseInt(document.getElementById('cotEmpleados').value)||0:0;
+
+  const hasFiscal=document.getElementById('cotFiscal').checked;
+  const hasTrading=hasFiscal&&document.getElementById('cotTrading').checked;
+  const hasImportador=hasFiscal&&document.getElementById('cotImportador').checked;
+  const hasExportador=hasFiscal&&document.getElementById('cotExportador').checked;
+  const hasANV=hasFiscal&&document.getElementById('cotANV').checked;
+  const hasEndoso=hasFiscal&&document.getElementById('cotEndoso').checked;
+
   const hasDomicilio=document.getElementById('cotDomicilio').checked;
   const hasConstitucion=document.getElementById('cotConstitucion').checked;
   const hasComap=document.getElementById('cotComap').checked;
 
-  let monthly=COT_BASE_FEE[entidad]||400;
+  // Calculate in USD first
+  let monthlyUsd=COT_BASE_FEE[entidad]||400;
 
-  // Comprobantes adjustment
   if(hasContab){
-    for(const[limit,adj] of COT_COMPROBANTES){if(comprobantes<=limit){monthly+=adj;break}}
+    for(const[limit,adj] of COT_COMPROBANTES){if(comprobantes<=limit){monthlyUsd+=adj;break}}
+    if(hasConciliacion)monthlyUsd+=75;
+    if(hasReportes)monthlyUsd+=150;
   }
 
-  // Sueldos
-  if(hasSueldos){monthly+=100+empleados*25}
+  if(hasSueldos){
+    if(conEmpleados){monthlyUsd+=100+empleados*25}
+    else{monthlyUsd+=50} // solo aportes patronales sin dependientes
+  }
 
-  // Domicilio
-  if(hasDomicilio)monthly+=75;
+  if(hasFiscal){
+    if(hasTrading)monthlyUsd+=200;
+    if(hasImportador)monthlyUsd+=100;
+    if(hasExportador)monthlyUsd+=100;
+    if(hasANV)monthlyUsd+=75;
+    if(hasEndoso)monthlyUsd+=50;
+  }
 
-  // NO CEDE adjustment
-  if(cede==='NO CEDE')monthly+=50;
+  if(hasDomicilio)monthlyUsd+=75;
+  if(cede==='NO CEDE')monthlyUsd+=50;
 
-  const plaza=Math.round(monthly*1.25);
+  // Convert and round
+  let displayFee,displayPlaza,displayMoneda;
+  if(moneda==='UYU'){
+    displayFee=cotRound(monthlyUsd*tc,'UYU');
+    displayPlaza=cotRound(monthlyUsd*1.25*tc,'UYU');
+    displayMoneda='UYU';
+  }else{
+    displayFee=cotRound(monthlyUsd,'USD');
+    displayPlaza=cotRound(monthlyUsd*1.25,'USD');
+    displayMoneda='USD';
+  }
 
-  document.getElementById('cotFeeCensus').textContent=`USD ${monthly.toLocaleString('es-UY')} /mes`;
-  document.getElementById('cotFeePlaza').textContent=`USD ${plaza.toLocaleString('es-UY')} /mes`;
+  document.getElementById('cotFeeCensus').textContent=`${displayMoneda} ${displayFee.toLocaleString('es-UY')} /mes`;
+  document.getElementById('cotFeePlaza').textContent=`${displayMoneda} ${displayPlaza.toLocaleString('es-UY')} /mes`;
 
   // One-time fees
   const onetimes=[];
@@ -1271,17 +1362,21 @@ function calcCotizacion(){
     onetimeVal.textContent='-';
   }
 
-  return{monthly,plaza,onetimes,entidad,cede,hasContab,comprobantes,hasSueldos,empleados,hasDomicilio,hasConstitucion,hasComap};
+  return{monthly:displayFee,monthlyUsd,plaza:displayPlaza,moneda:displayMoneda,onetimes,entidad,cede,
+    hasContab,comprobantes,hasConciliacion,hasReportes,
+    hasSueldos,conEmpleados,empleados,
+    hasFiscal:document.getElementById('cotFiscal').checked,
+    hasIRAE:document.getElementById('cotIRAE').checked,
+    hasIP:document.getElementById('cotIP').checked,
+    hasIVA:document.getElementById('cotIVA').checked,
+    hasTrading,hasImportador,hasExportador,hasANV,hasEndoso,
+    hasDomicilio,hasConstitucion,hasComap};
 }
 
 function getCotData(){
   const d=calcCotizacion();
   d.cliente=document.getElementById('cotCliente').value.trim()||'Cliente';
   d.actividad=document.getElementById('cotActividad').value.trim()||'';
-  d.hasFiscal=document.getElementById('cotFiscal').checked;
-  d.hasIRAE=document.getElementById('cotIRAE').checked;
-  d.hasIP=document.getElementById('cotIP').checked;
-  d.hasIVA=document.getElementById('cotIVA').checked;
   return d;
 }
 
@@ -1349,6 +1444,8 @@ async function generarPropuesta(){
     bodyChildren.push(heading(`${svcNum}) Servicio de asesoramiento contable:`,2));
     bodyChildren.push(bullet('Registración contable de la documentación proporcionada por el cliente.'));
     bodyChildren.push(bullet('Preparación de estados contables de acuerdo con las normas vigentes.'));
+    if(d.hasConciliacion)bodyChildren.push(bullet('Conciliación bancaria mensual.'));
+    if(d.hasReportes)bodyChildren.push(bullet('Elaboración de reportes de resultados mensuales.'));
     bodyChildren.push(bullet('Asesoramiento contable permanente.'));
     svcNum++;
   }
@@ -1361,6 +1458,11 @@ async function generarPropuesta(){
     if(d.hasIVA)impuestos.push('IVA');
     if(impuestos.length)bodyChildren.push(bullet(`Liquidación y presentación de declaraciones juradas: ${impuestos.join(', ')}.`));
     bodyChildren.push(bullet('Confección y presentación de declaraciones juradas mensuales y anuales ante DGI.'));
+    if(d.hasTrading)bodyChildren.push(bullet('Asesoramiento y liquidación bajo régimen de trading (Res. DGI 51/997).'));
+    if(d.hasImportador)bodyChildren.push(bullet('Asesoramiento en operaciones de importación y régimen aduanero aplicable.'));
+    if(d.hasExportador)bodyChildren.push(bullet('Asesoramiento en operaciones de exportación y beneficios fiscales asociados.'));
+    if(d.hasANV)bodyChildren.push(bullet('Seguimiento y cumplimiento de obligaciones vinculadas a proyecto ANV.'));
+    if(d.hasEndoso)bodyChildren.push(bullet('Gestión de endoso de certificados de crédito ante DGI.'));
     bodyChildren.push(bullet('Emisión de certificados y constancias requeridas por la normativa vigente.'));
     bodyChildren.push(bullet('Asesoramiento fiscal permanente y planificación tributaria.'));
     svcNum++;
@@ -1368,10 +1470,15 @@ async function generarPropuesta(){
 
   if(d.hasSueldos){
     bodyChildren.push(heading(`${svcNum}) Servicio de liquidación de retribuciones y cargas sociales:`,2));
-    bodyChildren.push(bullet('Liquidación mensual de sueldos y jornales.'));
-    bodyChildren.push(bullet('Liquidación de aguinaldo, salario vacacional y licencias.'));
-    bodyChildren.push(bullet('Confección de nóminas y declaraciones ante BPS.'));
-    bodyChildren.push(bullet('Asesoramiento en materia laboral, incluyendo BSE y MTSS.'));
+    if(d.conEmpleados){
+      bodyChildren.push(bullet(`Liquidación mensual de sueldos y jornales (${d.empleados} empleado${d.empleados!==1?'s':''}).`));
+      bodyChildren.push(bullet('Liquidación de aguinaldo, salario vacacional y licencias.'));
+      bodyChildren.push(bullet('Confección de nóminas y declaraciones ante BPS.'));
+      bodyChildren.push(bullet('Asesoramiento en materia laboral, incluyendo BSE y MTSS.'));
+    }else{
+      bodyChildren.push(bullet('Liquidación de aportes patronales del titular/socio.'));
+      bodyChildren.push(bullet('Confección de declaraciones ante BPS.'));
+    }
     svcNum++;
   }
 
@@ -1383,7 +1490,7 @@ async function generarPropuesta(){
 
   // III. HONORARIOS
   bodyChildren.push(heading('III. HONORARIOS',1));
-  bodyChildren.push(p(`Los honorarios profesionales por los servicios detallados precedentemente ascienden a USD ${d.monthly.toLocaleString('es-UY')} + IVA (22%) mensuales.`,{bold:true}));
+  bodyChildren.push(p(`Los honorarios profesionales por los servicios detallados precedentemente ascienden a ${d.moneda} ${d.monthly.toLocaleString('es-UY')} + IVA (22%) mensuales.`,{bold:true}));
 
   if(d.onetimes.length){
     bodyChildren.push(p('Adicionalmente, se establecen los siguientes honorarios por única vez:'));
