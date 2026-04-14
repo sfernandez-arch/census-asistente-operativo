@@ -489,7 +489,7 @@
         <span class="cotizador-result-value highlight" id="cotFeeCensus">USD 0 /mes</span>
       </div>
       <div class="cotizador-result-row">
-        <span class="cotizador-result-label">Honorario promedio de plaza</span>
+        <span class="cotizador-result-label">Valor de referencia CCEAU</span>
         <span class="cotizador-result-value secondary" id="cotFeePlaza">USD 0 /mes</span>
       </div>
       <div class="cotizador-result-row cotizador-onetime" id="cotOnetimeRow">
@@ -1243,6 +1243,11 @@ async function sendMessage(){
 const COT_BASE_FEE={Unipersonal:125,SRL:175,SAS:175,SA:225,Fideicomiso:250,Otro:175};
 const COT_COMPROBANTES=[[20,0],[50,100],[100,200],[200,350],[Infinity,600]];
 const COT_CONSTITUCION={SAS:2500,SRL:2000,SA:3500,Unipersonal:0,Fideicomiso:0,Otro:0};
+
+// CCEAU Arancel vigente 02/2025, ajustado por IPC aproximado para 2026
+const CCEAU_IPC_FACTOR=1.06; // ~6% IPC Feb25 a Abr26 (estimado)
+const CCEAU_MIN_BASICO=5077; // Honorario mínimo básico mensual UYU (Feb 2025)
+const CCEAU_2181=8366; // Formulario 2181 DGI anual UYU (solo CEDE)
 let cotTcBcu=null;
 
 function toggleCotSub(id){
@@ -1334,15 +1339,19 @@ function calcCotizacion(){
   if(hasDomicilio)monthlyUsd+=75;
   if(cede==='CEDE')monthlyUsd+=200;
 
+  // CCEAU reference (legal minimum): base mensual + 2181 prorrateado si CEDE
+  let cceauUyu=CCEAU_MIN_BASICO*CCEAU_IPC_FACTOR;
+  if(cede==='CEDE')cceauUyu+=(CCEAU_2181*CCEAU_IPC_FACTOR)/12;
+
   // Convert and round
   let displayFee,displayPlaza,displayMoneda;
   if(moneda==='UYU'){
     displayFee=cotRound(monthlyUsd*tc,'UYU');
-    displayPlaza=cotRound(monthlyUsd*1.25*tc,'UYU');
+    displayPlaza=cotRound(cceauUyu,'UYU');
     displayMoneda='UYU';
   }else{
     displayFee=cotRound(monthlyUsd,'USD');
-    displayPlaza=cotRound(monthlyUsd*1.25,'USD');
+    displayPlaza=cotRound(cceauUyu/tc,'USD');
     displayMoneda='USD';
   }
 
