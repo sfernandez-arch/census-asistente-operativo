@@ -1242,6 +1242,8 @@ async function sendMessage(){
 // ===== COTIZADOR =====
 const COT_BASE_FEE={Unipersonal:125,SRL:175,SAS:175,SA:225,Fideicomiso:250,Otro:175};
 const COT_COMPROBANTES=[[20,0],[50,100],[100,200],[200,350],[Infinity,600]];
+// Conciliación bancaria: escalada con incremento marginal decreciente
+const COT_CONCILIACION=[[20,50],[50,85],[100,115],[200,140],[500,160],[Infinity,180]];
 const COT_CONSTITUCION={SAS:2500,SRL:2000,SA:3500,Unipersonal:0,Fideicomiso:0,Otro:0};
 
 // CCEAU Arancel vigente 02/2025, ajustado por IPC aproximado para 2026
@@ -1319,7 +1321,9 @@ function calcCotizacion(){
 
   if(hasContab){
     for(const[limit,adj] of COT_COMPROBANTES){if(comprobantes<=limit){monthlyUsd+=adj;break}}
-    if(hasConciliacion)monthlyUsd+=75;
+    if(hasConciliacion){
+      for(const[limit,adj] of COT_CONCILIACION){if(comprobantes<=limit){monthlyUsd+=adj;break}}
+    }
     if(hasReportes)monthlyUsd+=150;
   }
 
