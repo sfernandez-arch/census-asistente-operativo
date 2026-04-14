@@ -470,7 +470,7 @@
         <div class="cotizador-check"><input type="checkbox" id="cotConEmpleados" onchange="toggleCotSub('empleados');calcCotizacion()"><label for="cotConEmpleados">Con empleados</label></div>
         <div class="cotizador-sub" id="subEmpleados">
           <div class="cotizador-field"><label>Cantidad de empleados</label><input type="number" id="cotEmpleados" min="1" value="1" oninput="calcCotizacion()"></div>
-          <div class="cotizador-info">Escala con marginal decreciente: 1 empl USD 185, 5 empl USD 230, 10 empl USD 260, 20 empl USD 305</div>
+          <div class="cotizador-info">Escala con marginal decreciente: 1 empl USD 185 · 5 empl USD 400 · 10 empl USD 565 · 20 empl USD 795 · 50 empl USD 1.250</div>
         </div>
         <div class="cotizador-info" id="cotSueldosSinEmpl" style="display:block">Sin empleados — incluye solo liquidación de aportes patronales (unipersonal/socio)</div>
       </div>
@@ -1248,11 +1248,12 @@ function cotConciliacionFee(docs){
   const raw=150+10*Math.sqrt(Math.max(0,docs));
   return Math.round(raw/5)*5;
 }
-// Sueldos con empleados: salto grande 0→1, marginal decreciente por franjas
-// fee(n>=1) = 150 + 35*sqrt(n). 0 empleados → 0 (absorbido en base)
+// Sueldos con empleados: progresivo con marginal decreciente
+// Anclas: 1 empl = USD 185, 50 empl = USD 1.250
+// Fórmula: interpolación sobre raíz cuadrada entre ambos puntos
 function cotSueldosFee(empleados){
   if(empleados<=0)return 0;
-  const raw=150+35*Math.sqrt(empleados);
+  const raw=185+(1250-185)*(Math.sqrt(empleados)-1)/(Math.sqrt(50)-1);
   return Math.round(raw/5)*5;
 }
 const COT_CONSTITUCION={SAS:2500,SRL:2000,SA:3500,Unipersonal:0,Fideicomiso:0,Otro:0};
