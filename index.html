@@ -733,7 +733,7 @@ function enterApp(user,missed){
   document.getElementById('userBadge').style.display='block';
   document.getElementById('userBadgeName').textContent=user.name;
   document.getElementById('navTabs').classList.add('show');
-  if(CRM_USERS.includes(currentUser.email)){document.getElementById('navCrm').style.display='';document.getElementById('navCotizador').style.display='';}
+  if(CRM_USERS.includes(currentUser.email)){const nc=document.getElementById('navCrm');if(nc)nc.style.display='';document.getElementById('navCotizador').style.display='';}
   if(ADMIN_ROLES.includes(user.role)){
     populateUnlockSelect();
     document.getElementById('adminWelcome').textContent=`Hola ${user.name}, ¿qué necesitás?`;
