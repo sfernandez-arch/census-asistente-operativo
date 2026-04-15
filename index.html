@@ -563,6 +563,20 @@
     <select class="field-input" id="resInicio" style="margin-bottom:12px"></select>
     <div class="field-label">Hora fin</div>
     <select class="field-input" id="resFin"></select>
+    <div id="resRecurrenceWrap">
+      <div class="field-label">Recurrencia</div>
+      <select class="field-input" id="resRecurrencia" style="margin-bottom:12px" onchange="toggleRecEnd()">
+        <option value="none">Sin recurrencia (solo esta fecha)</option>
+        <option value="weekly">Semanal (todos los mismos días)</option>
+        <option value="biweekly">Quincenal (cada 2 semanas)</option>
+        <option value="monthly">Mensual (mismo día del mes)</option>
+      </select>
+      <div id="resRecEndWrap" style="display:none">
+        <div class="field-label">Hasta (opcional)</div>
+        <input type="date" class="field-input" id="resRecEnd">
+      </div>
+    </div>
+    <div id="resSeriesBadge" style="display:none;font-size:11px;color:var(--red);margin-bottom:8px;text-align:center">Parte de una serie recurrente</div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
       <button class="btn-primary" onclick="saveReservation()">Reservar</button>
@@ -570,6 +584,18 @@
     <div class="login-error" id="resError" style="display:none"></div>
     <div id="resDeleteWrap" style="display:none">
       <button class="btn-delete" onclick="deleteReservation()">Cancelar reserva</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="scopeModal">
+  <div class="modal-box" style="max-width:380px">
+    <h3 id="scopeTitle">¿A qué aplica el cambio?</h3>
+    <div class="modal-date">Esta reserva es parte de una serie recurrente</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+      <button class="crm-btn-outline" style="padding:14px" onclick="confirmScope('this')">Solo esta reunión</button>
+      <button class="crm-btn-outline" style="padding:14px" onclick="confirmScope('all')">Todas las reuniones de la serie</button>
+      <button class="btn-cancel" onclick="closeScopeModal()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -1794,7 +1820,8 @@ async function renderSalaGrid(){
         if(r.start===hour){
           const div=document.createElement('div');
           div.className='sala-reservation';
-          div.innerHTML=`<div class="res-title">${r.motivo}</div><div class="res-who">${r.start}–${r.end} · ${r.user}</div>`;
+          const recIcon=r.seriesId?' ↻':'';
+          div.innerHTML=`<div class="res-title">${r.motivo}${recIcon}</div><div class="res-who">${r.start}–${r.end} · ${r.user}</div>`;
           div.onclick=(e)=>{e.stopPropagation();openModalEdit(r)};
           slot.appendChild(div);
         }
@@ -1817,6 +1844,11 @@ function populateTimeSelects(startVal,endVal){
   });
 }
 
+function toggleRecEnd(){
+  const rec=document.getElementById('resRecurrencia').value;
+  document.getElementById('resRecEndWrap').style.display=rec==='none'?'none':'block';
+}
+
 function openModalNew(dateStr,start,end){
   editingReservation=null;
   salaModalDate=dateStr;
@@ -1824,6 +1856,11 @@ function openModalNew(dateStr,start,end){
   document.getElementById('modalDate').textContent=fmtDateLong(new Date(dateStr+'T12:00:00'));
   document.getElementById('resMotivo').value='';
   populateTimeSelects(start,end);
+  document.getElementById('resRecurrencia').value='none';
+  document.getElementById('resRecEnd').value='';
+  document.getElementById('resRecEndWrap').style.display='none';
+  document.getElementById('resRecurrenceWrap').style.display='';
+  document.getElementById('resSeriesBadge').style.display='none';
   document.getElementById('resError').style.display='none';
   document.getElementById('resDeleteWrap').style.display='none';
   document.getElementById('reservationModal').classList.add('show');
@@ -1837,6 +1874,15 @@ function openModalEdit(r){
   document.getElementById('modalDate').textContent=fmtDateLong(new Date(r.date+'T12:00:00'));
   document.getElementById('resMotivo').value=r.motivo;
   populateTimeSelects(r.start,r.end);
+  // Hide recurrence controls when editing (can't change recurrence of existing)
+  document.getElementById('resRecurrenceWrap').style.display='none';
+  // Show series badge if this is part of a series
+  const isSeries=!!r.seriesId;
+  document.getElementById('resSeriesBadge').style.display=isSeries?'block':'none';
+  if(isSeries){
+    const patternText={weekly:'semanal',biweekly:'quincenal',monthly:'mensual'}[r.pattern]||'recurrente';
+    document.getElementById('resSeriesBadge').textContent=`Parte de una serie ${patternText}`;
+  }
   document.getElementById('resError').style.display='none';
   const canDelete=currentUser&&(r.email===currentUser.email||ADMIN_ROLES.includes(currentUser.role));
   document.getElementById('resDeleteWrap').style.display=canDelete?'block':'none';
@@ -1849,23 +1895,61 @@ function closeModal(){
   salaModalDate=null;
 }
 
+let pendingScopeAction=null;
+
+function askScope(action){
+  pendingScopeAction=action;
+  document.getElementById('scopeTitle').textContent=action==='delete'?'¿Qué reunión cancelar?':'¿A qué aplica el cambio?';
+  document.getElementById('scopeModal').classList.add('show');
+}
+
+function closeScopeModal(){
+  document.getElementById('scopeModal').classList.remove('show');
+  pendingScopeAction=null;
+}
+
+function confirmScope(scope){
+  const action=pendingScopeAction;
+  closeScopeModal();
+  if(action==='save')doSaveReservation(scope);
+  else if(action==='delete')doDeleteReservation(scope);
+}
+
 async function saveReservation(){
   const motivo=document.getElementById('resMotivo').value.trim();
   const start=document.getElementById('resInicio').value;
   const end=document.getElementById('resFin').value;
   const errEl=document.getElementById('resError');
   errEl.style.display='none';
-
   if(!motivo){errEl.textContent='Ingresá un motivo.';errEl.style.display='block';return}
   if(start>=end){errEl.textContent='La hora de fin debe ser posterior al inicio.';errEl.style.display='block';return}
+  // If editing a series instance, ask scope
+  if(editingReservation&&editingReservation.seriesId){askScope('save');return}
+  doSaveReservation(null);
+}
 
+async function doSaveReservation(scope){
+  const motivo=document.getElementById('resMotivo').value.trim();
+  const start=document.getElementById('resInicio').value;
+  const end=document.getElementById('resFin').value;
+  const errEl=document.getElementById('resError');
   const dateStr=salaModalDate;
   try{
     let res;
     if(editingReservation){
-      res=await fetch(SALA_API,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:editingReservation.id,date:dateStr,start,end,motivo})});
+      const body={id:editingReservation.id,date:dateStr,start,end,motivo};
+      if(editingReservation.seriesId){
+        body.seriesId=editingReservation.seriesId;
+        body.scope=scope;
+        body.originalDate=editingReservation.originalDate||editingReservation.date;
+      }
+      res=await fetch(SALA_API,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     }else{
-      res=await fetch(SALA_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({date:dateStr,start,end,motivo,user:currentUser.name,email:currentUser.email})});
+      const rec=document.getElementById('resRecurrencia').value;
+      const recEnd=document.getElementById('resRecEnd').value;
+      const body={date:dateStr,start,end,motivo,user:currentUser.name,email:currentUser.email};
+      if(rec!=='none'){body.recurrence={pattern:rec,endDate:recEnd||null}}
+      res=await fetch(SALA_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     }
     const data=await res.json();
     if(!res.ok){
@@ -1883,8 +1967,16 @@ async function saveReservation(){
 
 async function deleteReservation(){
   if(!editingReservation)return;
+  if(editingReservation.seriesId){askScope('delete');return}
+  doDeleteReservation(null);
+}
+
+async function doDeleteReservation(scope){
+  if(!editingReservation)return;
   try{
-    await fetch(SALA_API,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:editingReservation.id,date:editingReservation.date})});
+    const body={id:editingReservation.id,date:editingReservation.originalDate||editingReservation.date};
+    if(editingReservation.seriesId){body.seriesId=editingReservation.seriesId;body.scope=scope}
+    await fetch(SALA_API,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     closeModal();
     renderSalaGrid();
   }catch(e){alert('Error al eliminar la reserva.')}
@@ -1896,6 +1988,7 @@ function changeWeek(dir){
 }
 
 document.getElementById('reservationModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+document.getElementById('scopeModal').addEventListener('click',function(e){if(e.target===this)closeScopeModal()});
 
 async function sendSummary(){
   if(history.length===0){alert('No hay conversación para resumir todavía.');return}
