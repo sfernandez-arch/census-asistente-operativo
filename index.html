@@ -15,8 +15,16 @@
   .header-divider{width:1px;height:24px;background:var(--border)}
   .header-label{font-family:'Work Sans',sans-serif;font-size:12px;font-weight:400;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase}
   .header-right{display:flex;align-items:center;gap:16px}
-  .user-badge{font-size:12px;color:var(--text-muted);font-weight:300;display:none}
-  .user-badge span{color:var(--red);font-weight:500}
+  .user-badge{font-size:12px;color:var(--text-muted);font-weight:300;display:none;position:relative}
+  .user-badge .user-name-btn{color:var(--red);font-weight:500;cursor:pointer;user-select:none;padding:4px 6px;border-radius:3px;transition:background 0.15s}
+  .user-badge .user-name-btn:hover{background:var(--red-glow)}
+  .user-badge .caret{font-size:9px;margin-left:3px;opacity:0.6}
+  .user-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border:1px solid var(--border);border-radius:3px;min-width:160px;box-shadow:0 6px 20px rgba(0,0,0,0.4);z-index:150;animation:fadeUp 0.15s ease both}
+  .user-menu.show{display:block}
+  .user-menu-item{padding:10px 14px;font-size:13px;color:var(--text);cursor:pointer;transition:background 0.15s;display:flex;align-items:center;gap:8px}
+  .user-menu-item:hover{background:var(--surface2)}
+  .user-menu-item.logout{color:#ff6b6b}
+  .user-menu-item.logout:hover{background:rgba(255,68,68,0.1)}
   .status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);font-weight:300}
   .status-dot{width:7px;height:7px;background:#4CAF82;border-radius:50%;animation:pulse 2.5s infinite}
   @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,130,0.4)}50%{box-shadow:0 0 0 5px rgba(76,175,130,0)}}
@@ -274,7 +282,11 @@
     <span class="header-label">Néstor · Asistente Operativo</span>
   </div>
   <div class="header-right">
-    <div class="user-badge" id="userBadge">Sesión: <span id="userBadgeName"></span></div>
+    <div class="user-badge" id="userBadge">Sesión: <span class="user-name-btn" id="userBadgeName" onclick="toggleUserMenu(event)"></span><span class="caret" style="display:none" id="userCaret">▾</span>
+      <div class="user-menu" id="userMenu">
+        <div class="user-menu-item logout" onclick="doLogout()">Cerrar sesión</div>
+      </div>
+    </div>
     <div class="status"><div class="status-dot"></div>En línea</div>
   </div>
 </header>
@@ -878,8 +890,51 @@ async function handleResetTokenOnLoad(){
 function showPasswordError(msg){const el=document.getElementById('passwordError');el.textContent=msg;el.style.display='block'}
 function showChangePasswordError(msg){const el=document.getElementById('changePasswordError');el.textContent=msg;el.style.display='block'}
 
+function toggleUserMenu(ev){
+  if(ev)ev.stopPropagation();
+  const menu=document.getElementById('userMenu');
+  menu.classList.toggle('show');
+}
+function closeUserMenu(){
+  const menu=document.getElementById('userMenu');
+  if(menu)menu.classList.remove('show');
+}
+function doLogout(){
+  closeUserMenu();
+  clearSession();
+  currentUser=null;
+  history=[];
+  pendingLoginEmail=null;
+  resetTokenEmail=null;
+  // Oculto nav tabs y badge
+  const nav=document.getElementById('navTabs');if(nav)nav.classList.remove('show');
+  const badge=document.getElementById('userBadge');if(badge)badge.style.display='none';
+  const caret=document.getElementById('userCaret');if(caret)caret.style.display='none';
+  // Reseteo campos y vuelvo a login
+  document.getElementById('emailInput').value='';
+  document.getElementById('passwordInput').value='';
+  document.getElementById('loginError').style.display='none';
+  document.getElementById('passwordError').style.display='none';
+  const ok=document.getElementById('forgotSuccess');if(ok)ok.style.display='none';
+  // Restauro UI de changePassword si quedó en modo reset
+  document.getElementById('changePasswordTag').textContent='Census · Primer ingreso';
+  document.getElementById('changePasswordTitle').textContent='Cambiá tu contraseña';
+  document.getElementById('currentPasswordWrap').style.display='';
+  // Limpio mensajes
+  document.getElementById('messages').innerHTML='';
+  showScreen('loginScreen');
+}
+// Click fuera del menú lo cierra
+document.addEventListener('click',function(e){
+  const menu=document.getElementById('userMenu');
+  const badge=document.getElementById('userBadge');
+  if(!menu||!badge)return;
+  if(menu.classList.contains('show')&&!badge.contains(e.target))closeUserMenu();
+});
+
 function enterApp(user,missed){
   document.getElementById('userBadge').style.display='block';
+  document.getElementById('userCaret').style.display='inline';
   document.getElementById('userBadgeName').textContent=user.name;
   document.getElementById('navTabs').classList.add('show');
   if(CRM_USERS.includes(currentUser.email)){const nc=document.getElementById('navCrm');if(nc)nc.style.display='';document.getElementById('navCotizador').style.display='';}
