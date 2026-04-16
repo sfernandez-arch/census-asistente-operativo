@@ -693,6 +693,13 @@ function consumeCode(e){const codes=JSON.parse(localStorage.getItem('census_unlo
 function generateRandom6(){return String(Math.floor(100000+Math.random()*900000))}
 
 const DEFAULT_PASSWORD='Census2026';
+// Reseteos de contraseña activos. Cada entrada fuerza el ingreso con la
+// contraseña indicada la próxima vez que ese usuario intente loguearse, y lo
+// obliga a cambiarla. Una vez cambiada, queda marcada como consumida y el
+// usuario vuelve al flujo normal con su nueva contraseña.
+const PASSWORD_RESETS={
+  'mmorales@censusuy.com':{password:'matigallinaporsiempre',token:'reset_2026_04_17'}
+};
 let pendingLoginEmail=null;
 
 async function sha256(text){
@@ -706,8 +713,15 @@ function getPasswordData(email){
   return raw?JSON.parse(raw):null;
 }
 
-function setPasswordData(email,hash){
-  localStorage.setItem('census_pwd_'+email.replace(/[@.]/g,'_'),JSON.stringify({hash,changed:true}));
+function setPasswordData(email,hash,extra){
+  const data={hash,changed:true,...(extra||{})};
+  localStorage.setItem('census_pwd_'+email.replace(/[@.]/g,'_'),JSON.stringify(data));
+}
+function hasPendingReset(email){
+  const r=PASSWORD_RESETS[email];
+  if(!r)return false;
+  const pwd=getPasswordData(email);
+  return !pwd||pwd.resetConsumed!==r.token;
 }
 
 function doLogin(){
@@ -718,7 +732,8 @@ function doLogin(){
   if(!user){showLoginError('Mail no reconocido. Consultá a Matías.');return}
   pendingLoginEmail=email;
   const pwdData=getPasswordData(email);
-  if(!pwdData||!pwdData.changed){
+  const pendingReset=hasPendingReset(email);
+  if(pendingReset||!pwdData||!pwdData.changed){
     document.getElementById('changePasswordUser').textContent=user.name;
     showScreen('changePasswordScreen');
   }else{
@@ -750,13 +765,21 @@ async function doChangePassword(){
   const pwdData=getPasswordData(email);
   const currentHash=await sha256(current);
   const defaultHash=await sha256(DEFAULT_PASSWORD);
-  const validHash=pwdData?pwdData.hash:defaultHash;
+  const pendingReset=hasPendingReset(email);
+  const resetEntry=PASSWORD_RESETS[email];
+  let validHash;
+  if(pendingReset){
+    validHash=await sha256(resetEntry.password);
+  }else{
+    validHash=pwdData?pwdData.hash:defaultHash;
+  }
   if(currentHash!==validHash){showChangePasswordError('La contraseña actual es incorrecta.');return}
   if(!newPwd){showChangePasswordError('Ingresá una contraseña nueva.');return}
   if(newPwd.length<8){showChangePasswordError('La contraseña nueva debe tener al menos 8 caracteres.');return}
   if(newPwd!==confirm){showChangePasswordError('Las contraseñas nuevas no coinciden.');return}
   const newHash=await sha256(newPwd);
-  setPasswordData(email,newHash);
+  const extra=pendingReset?{resetConsumed:resetEntry.token}:undefined;
+  setPasswordData(email,newHash,extra);
   document.getElementById('currentPasswordInput').value='';
   document.getElementById('newPasswordInput').value='';
   document.getElementById('confirmPasswordInput').value='';
