@@ -302,18 +302,21 @@
     <input type="password" class="field-input" id="passwordInput" placeholder="Tu contraseña" onkeydown="if(event.key==='Enter')doPasswordLogin()">
     <button class="btn-primary" onclick="doPasswordLogin()">Ingresar</button>
     <div class="login-error" id="passwordError"></div>
-    <div style="text-align:center;margin-top:16px"><a href="#" style="font-size:12px;color:var(--text-dim);text-decoration:underline;cursor:pointer" onclick="event.preventDefault();resetPassword()">Olvidé mi contraseña</a></div>
+    <div id="forgotSuccess" style="display:none;font-size:13px;color:#4CAF82;margin-top:8px;text-align:center"></div>
+    <div style="text-align:center;margin-top:16px"><a href="#" style="font-size:12px;color:var(--text-dim);text-decoration:underline;cursor:pointer" onclick="event.preventDefault();forgotPassword()">Olvidé mi contraseña</a></div>
   </div>
 </div>
 
 <div class="screen" id="changePasswordScreen">
   <div class="login-box">
-    <div class="login-tag">Census · Primer ingreso</div>
-    <h2>Cambiá tu contraseña</h2>
+    <div class="login-tag" id="changePasswordTag">Census · Primer ingreso</div>
+    <h2 id="changePasswordTitle">Cambiá tu contraseña</h2>
     <div class="login-divider"></div>
-    <p>Es tu primer ingreso, <strong id="changePasswordUser"></strong>. Creá una contraseña nueva para continuar.</p>
-    <div class="field-label">Contraseña actual</div>
-    <input type="password" class="field-input" id="currentPasswordInput" placeholder="Census2026" onkeydown="if(event.key==='Enter')document.getElementById('newPasswordInput').focus()">
+    <p id="changePasswordIntro">Es tu primer ingreso, <strong id="changePasswordUser"></strong>. Creá una contraseña nueva para continuar.</p>
+    <div id="currentPasswordWrap">
+      <div class="field-label">Contraseña actual</div>
+      <input type="password" class="field-input" id="currentPasswordInput" placeholder="Census2026" onkeydown="if(event.key==='Enter')document.getElementById('newPasswordInput').focus()">
+    </div>
     <div class="field-label">Contraseña nueva</div>
     <input type="password" class="field-input" id="newPasswordInput" placeholder="Mínimo 8 caracteres" onkeydown="if(event.key==='Enter')document.getElementById('confirmPasswordInput').focus()">
     <div class="field-label">Confirmar contraseña nueva</div>
@@ -761,28 +764,39 @@ async function doChangePassword(){
   const newPwd=document.getElementById('newPasswordInput').value;
   const confirm=document.getElementById('confirmPasswordInput').value;
   document.getElementById('changePasswordError').style.display='none';
-  if(!current){showChangePasswordError('Ingresá la contraseña actual.');return}
-  const pwdData=getPasswordData(email);
-  const currentHash=await sha256(current);
-  const defaultHash=await sha256(DEFAULT_PASSWORD);
-  const pendingReset=hasPendingReset(email);
-  const resetEntry=PASSWORD_RESETS[email];
-  let validHash;
-  if(pendingReset){
-    validHash=await sha256(resetEntry.password);
-  }else{
-    validHash=pwdData?pwdData.hash:defaultHash;
+  const isResetByMail=(resetTokenEmail&&resetTokenEmail===email);
+  if(!isResetByMail){
+    if(!current){showChangePasswordError('Ingresá la contraseña actual.');return}
+    const pwdData=getPasswordData(email);
+    const currentHash=await sha256(current);
+    const defaultHash=await sha256(DEFAULT_PASSWORD);
+    const pendingReset=hasPendingReset(email);
+    const resetEntry=PASSWORD_RESETS[email];
+    let validHash;
+    if(pendingReset){
+      validHash=await sha256(resetEntry.password);
+    }else{
+      validHash=pwdData?pwdData.hash:defaultHash;
+    }
+    if(currentHash!==validHash){showChangePasswordError('La contraseña actual es incorrecta.');return}
   }
-  if(currentHash!==validHash){showChangePasswordError('La contraseña actual es incorrecta.');return}
   if(!newPwd){showChangePasswordError('Ingresá una contraseña nueva.');return}
   if(newPwd.length<8){showChangePasswordError('La contraseña nueva debe tener al menos 8 caracteres.');return}
   if(newPwd!==confirm){showChangePasswordError('Las contraseñas nuevas no coinciden.');return}
   const newHash=await sha256(newPwd);
+  const resetEntry=PASSWORD_RESETS[email];
+  const pendingReset=!isResetByMail&&hasPendingReset(email);
   const extra=pendingReset?{resetConsumed:resetEntry.token}:undefined;
   setPasswordData(email,newHash,extra);
   document.getElementById('currentPasswordInput').value='';
   document.getElementById('newPasswordInput').value='';
   document.getElementById('confirmPasswordInput').value='';
+  // Salgo de modo reset si corresponde
+  resetTokenEmail=null;
+  // Restauro UI de changePassword a estado normal
+  document.getElementById('changePasswordTag').textContent='Census · Primer ingreso';
+  document.getElementById('changePasswordTitle').textContent='Cambiá tu contraseña';
+  document.getElementById('currentPasswordWrap').style.display='';
   proceedAfterPassword(email);
 }
 
@@ -806,6 +820,60 @@ function resetPassword(){
   const user=ALLOWED_USERS[pendingLoginEmail];
   document.getElementById('changePasswordUser').textContent=user.name;
   showScreen('changePasswordScreen');
+}
+
+let resetTokenEmail=null; // si no es null, estamos en modo "reset por mail"
+
+async function forgotPassword(){
+  if(!pendingLoginEmail)return;
+  const errEl=document.getElementById('passwordError');
+  const okEl=document.getElementById('forgotSuccess');
+  errEl.style.display='none';
+  okEl.style.display='none';
+  okEl.textContent='Enviando...';okEl.style.display='block';
+  try{
+    const res=await fetch(API_URL+'/auth/request-reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:pendingLoginEmail})});
+    const data=await res.json();
+    if(!res.ok){throw new Error(data.error||'Error')}
+    okEl.textContent=`Te enviamos un mail a ${pendingLoginEmail} con instrucciones. El link expira en 30 minutos.`;
+  }catch(e){
+    okEl.style.display='none';
+    errEl.textContent='No se pudo enviar el mail. Probá de nuevo en unos minutos.';
+    errEl.style.display='block';
+  }
+}
+
+function enterResetMode(email){
+  resetTokenEmail=email;
+  pendingLoginEmail=email;
+  // limpio cualquier pwd previa en este navegador
+  localStorage.removeItem('census_pwd_'+email.replace(/[@.]/g,'_'));
+  const user=ALLOWED_USERS[email];
+  document.getElementById('changePasswordTag').textContent='Census · Reseteo de contraseña';
+  document.getElementById('changePasswordTitle').textContent='Elegí una contraseña nueva';
+  document.getElementById('changePasswordIntro').innerHTML=`Hola <strong>${user?user.name:email}</strong>, ingresá tu nueva contraseña para continuar.`;
+  document.getElementById('currentPasswordWrap').style.display='none';
+  document.getElementById('currentPasswordInput').value='';
+  document.getElementById('newPasswordInput').value='';
+  document.getElementById('confirmPasswordInput').value='';
+  document.getElementById('changePasswordError').style.display='none';
+  showScreen('changePasswordScreen');
+  setTimeout(()=>document.getElementById('newPasswordInput').focus(),100);
+}
+
+async function handleResetTokenOnLoad(){
+  const params=new URLSearchParams(window.location.search);
+  const token=params.get('reset_token');
+  if(!token)return false;
+  // limpio la URL para no dejar el token visible
+  try{const clean=window.location.origin+window.location.pathname;window.history.replaceState({},'',clean)}catch(e){}
+  try{
+    const res=await fetch(API_URL+'/auth/verify-reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token})});
+    const data=await res.json();
+    if(!res.ok){alert(data.error||'El link de reseteo no es válido o expiró.');return false}
+    enterResetMode(data.email);
+    return true;
+  }catch(e){alert('Error al verificar el link. Probá de nuevo.');return false}
 }
 function showPasswordError(msg){const el=document.getElementById('passwordError');el.textContent=msg;el.style.display='block'}
 function showChangePasswordError(msg){const el=document.getElementById('changePasswordError');el.textContent=msg;el.style.display='block'}
@@ -2034,14 +2102,17 @@ async function sendSummary(){
   }
 }
 
-// Auto-login from saved session
-(function(){
+// Reset de contraseña por link de mail (prioridad máxima sobre auto-login)
+(async function(){
+  const handled=await handleResetTokenOnLoad();
+  if(handled)return;
+  // Auto-login from saved session
   const session=getSession();
   if(!session)return;
   const user=ALLOWED_USERS[session.email];
   if(!user)return;
   const pwdData=getPasswordData(session.email);
-  if(!pwdData||!pwdData.changed)return; // needs password setup, can't skip
+  if(!pwdData||!pwdData.changed)return;
   proceedAfterPassword(session.email);
 })();
 </script>
